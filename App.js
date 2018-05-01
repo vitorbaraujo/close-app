@@ -1,6 +1,13 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Container, Button, Text } from 'native-base';
+import { YellowBox } from 'react-native'
+import RootStack from './navigation/Stack'
+
+const warningsToIgnore = [
+  'Warning: componentWillReceiveProps is deprecated and will be removed in the next major version. Use static getDerivedStateFromProps instead.',
+  'Warning: componentWillMount is deprecated and will be removed in the next major version. Use componentDidMount instead. As a temporary workaround, you can rename to UNSAFE_componentWillMount.'
+]
+
+YellowBox.ignoreWarnings(warningsToIgnore)
 
 export default class App extends React.Component {
   constructor(props) {
@@ -25,23 +32,7 @@ export default class App extends React.Component {
     if (this.state.loading) {
       return <Expo.AppLoading />;
     }
-    return (
-      <Container style={styles.container}>
-        <Button>
-          <Text>
-            Button
-          </Text>
-        </Button>
-      </Container>
-    );
+    return <RootStack />;
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
