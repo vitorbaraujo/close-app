@@ -1,12 +1,38 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Container, Button, Text } from 'native-base';
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { loading: true };
+  }
+
+  componentDidMount() {
+    this.loadFonts();
+  }
+
+  async loadFonts() {
+    await Expo.Font.loadAsync({
+      'Roboto': require('native-base/Fonts/Roboto.ttf'),
+      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+    });
+
+    this.setState({ loading: false });
+  }
+
   render() {
+    if (this.state.loading) {
+      return <Expo.AppLoading />;
+    }
     return (
-      <View style={styles.container}>
-        <Text>Hello World!</Text>
-      </View>
+      <Container style={styles.container}>
+        <Button>
+          <Text>
+            Button
+          </Text>
+        </Button>
+      </Container>
     );
   }
 }
