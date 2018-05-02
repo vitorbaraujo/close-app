@@ -1,17 +1,21 @@
 import { StackNavigator } from 'react-navigation'
-import Homepage from '../components/Homepage'
-import Profile from '../components/Profile'
+import Homepage from '../components/homepage/Homepage'
+import Profile from '../components/profile/Profile'
+import Cycle from '../components/cycle/Cycle'
 
 export default StackNavigator(
   {
-    Home: {
-      screen: Homepage,
+    Homepage: {
+      screen: Homepage
     },
     Profile: {
-      screen: Profile,
+      screen: Profile
+    },
+    Cycle: {
+      screen: Cycle
     }
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Homepage',
   }
 )

@@ -1,41 +1,47 @@
 import React from 'react';
 import { StyleSheet, View, TouchableHighlight } from 'react-native';
-import { Container, Button, Text, Header, Left, Body, Right, Title, Icon } from 'native-base';
+import { Container, Text, Icon, Button, Header, Body, Left, Right, Title, Fab } from 'native-base';
 import { StackNavigator } from 'react-navigation';
-import CustomHeader from './CustomHeader';
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
     header: null
   }
 
+  _goTo(path) {
+    this.props.navigation.navigate(path)
+  }
+
   render() {
     return (
       <Container>
-        {/* <Header style={styles.header}>
-          <Left />
-          <Body />
-          <Right>
-            <Button transparent>
-              <Icon type="FontAwesome" name="user" />
-            </Button>
-          </Right>
-        </Header> */}
         <View style={styles.container}>
           <View style={styles.main}>
-            <View style={styles.header}>
-              <TouchableHighlight
-                onPress={() => this.props.navigation.navigate('Profile')}
-              >
-                <View style={styles.profileContainer}>
-                  <Text style={styles.profileText}>victornavarro</Text>
+            <Header
+              noShadow={true}
+              style={styles.header}
+            >
+              <Left />
+              <Body />
+              <Right>
+                <Button
+                  transparent
+                  onPress={() => this._goTo('Profile')}
+                >
+                  <Text style={styles.profileText} uppercase={false}>victornavarro</Text>
                   <Icon style={styles.profileIcon} type="FontAwesome" name="user" />
-                </View>
-              </TouchableHighlight>
-            </View>
+                </Button>
+              </Right>
+            </Header>
           </View>
           <View style={styles.timeline}>
             <Text>Timeline</Text>
+            <Fab
+              style={styles.addCycleButton}
+              onPress={() => this._goTo('Cycle')}
+            >
+              <Icon type="Feather" name="plus" />
+            </Fab>
           </View>
         </View>
       </Container>
@@ -54,10 +60,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#eca72c'
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    height: 50,
+    backgroundColor: '#eca72c'
   },
   profileContainer: {
     flexDirection: 'row',
@@ -68,11 +71,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   profileIcon: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    color: 'white'
+    color: 'white',
   },
   timeline: {
     flex: 2,
+  },
+  addCycleButton: {
+    backgroundColor: '#ee5622'
   }
 });
