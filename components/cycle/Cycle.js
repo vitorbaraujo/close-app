@@ -1,6 +1,12 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Container, Button, Text, Header, Body, Left, Right, Icon, Title } from 'native-base';
+import {
+  Container, Button, Text, Header,
+  Body, Left, Right, Icon,
+  Tabs, Tab
+} from 'native-base';
+import CycleHistory from './CycleHistory';
+import CycleStats from './CycleStats';
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -30,7 +36,26 @@ export default class Cycle extends React.Component {
             <Text>Cycle info</Text>
           </View>
           <View style={styles.profileInfo}>
-            <Text>Cycle history</Text>
+            <Tabs
+              initialPage={0}
+            >
+              <Tab
+                heading="Estatísticas"
+                tabStyle={styles.tab}
+                activeTabStyle={styles.tab}
+                textStyle={{ color: 'white'}}
+              >
+                <CycleStats />
+              </Tab>
+              <Tab
+                heading="Histórico"
+                tabStyle={styles.tab}
+                activeTabStyle={styles.tab}
+                textStyle={{ color: 'white' }}
+              >
+                <CycleHistory />
+              </Tab>
+            </Tabs>
           </View>
         </View>
       </Container>
@@ -54,5 +79,8 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     flex: 2,
+  },
+  tab: {
+    backgroundColor: '#eca72c'
   }
 });
