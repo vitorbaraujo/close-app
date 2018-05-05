@@ -1,0 +1,204 @@
+Starting the logger (/home/vitor/Android/Sdk/platform-tools/adb logcat *:S ReactN
+ative:V ReactNativeJS:V)...
+--------- beginning of crash
+--------- beginning of system
+--------- beginning of main
+05-11 13:11:39.680 24158  1148 I ReactNativeJS: 'OBJ', { isConnectable: null,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   rssi: -92,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   serviceData: null,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   overflowServiceUUIDs: null,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   mtu: 23,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   localName: null,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   manufacturerData: 'BgABCSAAjfSq
+vYIJpo6ZybZSShBtX0v4/xISlpE=',
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   txPowerLevel: null,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   id: '2D:F8:A6:5E:A7:5C',
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   solicitedServiceUUIDs: null,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   name: null,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   serviceUUIDs: null,
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:   _manager: 
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:    { _eventEmitter: 
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:       { _subscriber: 
+05-11 13:11:39.680 24158  1148 I ReactNativeJS:          { _subscriptionsForType:
+ 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:             { appStateDidChange: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                [ { subscriber: [C
+ ircular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    emitter: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                     { _subscriber
+ : [Circular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                       isAvailable
+ : true,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                       _eventHandl
+ ers: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                        { change: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                           { _mapD
+ ata: [],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                             _obje
+ ctIndex: {},
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                             _stri
+ ngIndex: {},
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                             _othe
+ rIndex: {} },
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          memoryWa
+ rning: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                           { _mapD
+ ata: [],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                             _obje
+ ctIndex: {},
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                             _stri
+ ngIndex: {},
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                             _othe
+ rIndex: {} } },
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                       currentStat
+ e: 'active' },
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    listener: [Fun
+ ction],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    context: undef
+ ined,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    eventType: 'ap
+ pStateDidChange',
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    key: 0 } ],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:               websocketMessage: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                [ ,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                  { subscriber: [C
+ ircular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    emitter: { _su
+ bscriber: [Circular] },
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    listener: [Fun
+ ction],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    context: undef
+ ined,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    eventType: 'we
+ bsocketMessage',
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    key: 1 } ],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:               websocketOpen: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                [ ,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                  { subscriber: [C
+ ircular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    emitter: { _su
+ bscriber: [Circular] },
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    listener: [Fun
+ ction],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    context: undef
+ ined,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    eventType: 'we
+ bsocketOpen',
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    key: 1 } ],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:               websocketClosed: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                [ ,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                  { subscriber: [C
+ ircular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    emitter: { _su
+ bscriber: [Circular] },
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    listener: [Fun
+ ction],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    context: undef
+ ined,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    eventType: 'we
+ bsocketClosed',
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    key: 1 } ],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:               websocketFailed: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                [ ,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                  { subscriber: [C
+ ircular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    emitter: { _su
+ bscriber: [Circular] },
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    listener: [Fun
+ ction],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    context: undef
+ ined,
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    eventType: 'we
+ bsocketFailed',
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    key: 1 } ],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:               didUpdateDimensions
+ : 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                [ { subscriber: [C
+ ircular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    emitter: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                     { _subscriber
+ : [Circular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                       sharedSubsc
+ riber: [Circular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                       _currentSub
+ scription: 
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                        { subscrib
+ er: [Circular],
+ 05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          emitter:
+  [Circular],
+  05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          listener
+  : [Function: scanListener],
+  05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          context:
+   undefined,
+   05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          eventTyp
+   e: 'ScanEvent',
+   05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          key: 0 }
+    },
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    listener: [Fun
+    ction],
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    context: undef
+    ined,
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    eventType: 'di
+    dUpdateDimensions',
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    key: 0 } ],
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:               hardwareBackPress: 
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                [ { subscriber: [C
+    ircular],
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    emitter: 
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                     { _subscriber
+    : [Circular],
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                       sharedSubsc
+    riber: [Circular],
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                       _currentSub
+    scription: 
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                        { subscrib
+    er: [Circular],
+    05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          emitter:
+     [Circular],
+     05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          listener
+     : [Function: scanListener],
+     05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          context:
+      undefined,
+      05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          eventTyp
+      e: 'ScanEvent',
+      05-11 13:11:39.680 24158  1148 I ReactNativeJS:                          key: 0 }
+       },
+       05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    listener: [Fun
+       ction],
+       05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    context: undef
+       ined,
+       05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    eventType: 'ha
+       rdwareBackPress',
+       05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    key: 0 } ],
+       05-11 13:11:39.680 24158  1148 I ReactNativeJS:               collectBugExtraData
+       : 
+       05-11 13:11:39.680 24158  1148 I ReactNativeJS:                [ { subscriber: [C
+       ircular],
+       05-11 13:11:39.680 24158  1148 I ReactNativeJS:                    emitter: 
+       05-11 13:11:39.680 24158  1148 I ReactNativeJS:                     { _
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS: 'OBJ', { isConnectable: null,
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   rssi: -70,
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   serviceData: null,
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   overflowServiceUUIDs: null,
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   mtu: 23,
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   localName: 'MI Band 2',
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   manufacturerData: 'VwEAfbNdkNX6
+       nJtwtMv7/n4OlQLMtcug4u8=',
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   txPowerLevel: null,
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   id: 'CC:B5:CB:A0:E2:EF',
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   solicitedServiceUUIDs: null,
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   name: 'MI Band 2',
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   serviceUUIDs: [ '0000fee0-0000-
+       1000-8000-00805f9b34fb' ],
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:   _manager: 
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:    { _eventEmitter: 
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:       { _subscriber: 
+       05-11 13:11:40.018 24158  1148 I ReactNativeJS:          { _subscriptionsForType:
+        
+        05-11 13:11:40.018 24158  1148 I ReactNativeJS:             { appStateDidChange: 
+        05-11 13:11:40.018 24158  1148 I ReactNativeJS:                [ { subscriber: [C
+        ircular],
+        05-11 13:11:40.018 24158  1148 I ReactNativeJS:                    emitter: 
+        05-11 13:11:40.018 24158  1148 I ReactNativeJS:                     { _subscriber
+        : [Circular],
+
