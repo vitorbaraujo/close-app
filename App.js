@@ -8,11 +8,11 @@ import React, { Component } from 'react';
 import {
   Platform,
   StyleSheet,
-  Text,
   View,
   TouchableHighlight
 } from 'react-native';
 import { ZeroMQ } from 'react-native-zeromq';
+import { Container, Button, Text } from 'native-base';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -110,11 +110,22 @@ export default class App extends Component<Props> {
         )
       } else {
         return (
-          <View style={styles.container}>
-            <Text>Connected: {this.state.connected ? "true" : "false"}</Text>
+          <Container>
+            <Button>
+              <Text>
+                Connected: true
+              </Text>
+            </Button>
 
-            {this.state.logs.map((log, idx) => <Text key={idx}>{log}</Text>)}
-          </View>
+            {
+              this.state.logs.map((log, idx) =>
+                <Button key={idx}>
+                  <Text>{log}</Text>
+                </Button>
+              )
+            }
+
+          </Container>
         )
       }
     } else {
