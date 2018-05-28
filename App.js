@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   Platform,
@@ -13,6 +7,7 @@ import {
 } from 'react-native';
 import { ZeroMQ } from 'react-native-zeromq';
 import { Container, Button, Text } from 'native-base';
+import RootStack from './navigation/Stack'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -109,24 +104,25 @@ export default class App extends Component<Props> {
           </View>
         )
       } else {
-        return (
-          <Container>
-            <Button>
-              <Text>
-                Connected: true
-              </Text>
-            </Button>
+        // return (
+          // <Container>
+          //   <Button>
+          //     <Text>
+          //       Connected: true
+          //     </Text>
+          //   </Button>
 
-            {
-              this.state.logs.map((log, idx) =>
-                <Button key={idx}>
-                  <Text>{log}</Text>
-                </Button>
-              )
-            }
+          //   {
+          //     this.state.logs.map((log, idx) =>
+          //       <Button key={idx}>
+          //         <Text>{log}</Text>
+          //       </Button>
+          //     )
+          //   }
 
-          </Container>
-        )
+          // </Container>
+        // )
+        return <RootStack />;
       }
     } else {
       return (
