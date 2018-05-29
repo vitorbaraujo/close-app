@@ -13,6 +13,14 @@ export default class Cycle extends React.Component {
     header: null
   }
 
+  constructor() {
+    super();
+  }
+
+  componentWillMount() {
+    console.log('PROOOOOPS', this.props);
+  }
+
   _goTo(path) {
     this.props.navigation.navigate(path)
   }
@@ -33,7 +41,7 @@ export default class Cycle extends React.Component {
               </Left>
               <Body />
             </Header>
-            <Text>Cycle info</Text>
+            <Text>{this.props.cycle.beer}</Text>
           </View>
           <View style={styles.profileInfo}>
             <Tabs
