@@ -243,17 +243,17 @@ export default class Homepage extends React.Component {
       newIp: "tcp://192.168.15.5:5567",
     }
 
-    console.log('Creating socket...')
-    this._createSocket()
-      .then((socket) => {
-        console.log('Socket created');
-        this.setState({ socket, loading: false })
+    // console.log('Creating socket...')
+    // this._createSocket()
+    //   .then((socket) => {
+    //     console.log('Socket created');
+    //     this.setState({ socket, loading: false })
 
-        this._connect(socket, this.state.ip)
-      })
-      .catch((error) => {
-        console.log('Error while creating socket', error)
-      })
+    //     this._connect(socket, this.state.ip)
+    //   })
+    //   .catch((error) => {
+    //     console.log('Error while creating socket', error)
+    //   })
   }
 
   _goTo(path, params) {

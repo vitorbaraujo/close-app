@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Container, Button, Text } from 'native-base';
 import RootStack from './navigation/Stack'
+import Login from './components/login/Login'
 
 const warningsToIgnore = [
   'Warning: componentWillReceiveProps is deprecated and will be removed in the next major version. Use static getDerivedStateFromProps instead.',
@@ -26,13 +27,9 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
-   constructor() {
-    console.log('Initializing app...')
-    super();
-   }
-
   render() {
-    return <RootStack />;
+    return <Login />;
+    // return <RootStack />;
   }
 }
 
