@@ -80,30 +80,13 @@ export default class Cycle extends React.Component {
     }
   }
 
-  async _doLogout() {
-    let result = await TokenUtils.removeToken();
-    if (result) {
-      this.setState({ token: null });
-    }
-  }
-
   render() {
     return (
       <Container style={styles.container}>
-        <Header>
-          <Left>
-            <Button
-              transparent
-              onPress={() => this._goTo('Register')}
-            >
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body />
-        </Header>
         <Content padder contentContainerStyle={styles.content}>
           <View>
-            <Text>Token: {this.state.token} </Text>
+            {/* <Text>Token: {this.state.token} </Text> */}
+            <Text style={styles.welcomeText}>Bem-vindo</Text>
             <Form>
               <Item floatingLabel>
                 <Label>Nome de usuário</Label>
@@ -120,19 +103,22 @@ export default class Cycle extends React.Component {
 
             <Button
               full
+              success
               style={styles.formButton}
               onPress={() => this._doLogin()}
             >
               <Text>Entrar</Text>
             </Button>
 
+            <Text style={styles.newUser}>
+              Não tem uma conta? Clique no botão abaixo para se registrar
+            </Text>
+
             <Button
               full
-              danger
-              style={styles.formButton}
-              onPress={() => this._doLogout()}
+              onPress={() => this.props.navigation.navigate("Register")}
             >
-              <Text>Sair</Text>
+              <Text>Registrar</Text>
             </Button>
 
             <Text style={{ color: 'red', alignSelf: 'center' }}>
@@ -154,7 +140,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center'
   },
+  welcomeText: {
+    fontSize: 30,
+    textAlign: 'center',
+    color: 'green',
+  },
   formButton: {
     marginTop: 50
+  },
+  newUser: {
+    fontSize: 10,
+    color: '#567bb7',
+    textAlign: 'center',
+    marginTop: 50,
+    marginBottom: 20,
   }
 })
