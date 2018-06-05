@@ -74,6 +74,14 @@ export default class Profile extends React.Component {
           </View>
           <View style={styles.profileInfo}>
             <Item stackedLabel disabled>
+              <Label>Nome</Label>
+              <Input disabled value={user.first_name} />
+            </Item>
+            <Item stackedLabel disabled>
+              <Label>Sobrenome</Label>
+              <Input disabled value={user.last_name} />
+            </Item>
+            <Item stackedLabel disabled>
               <Label>Nome de usuário</Label>
               <Input disabled value={user.username} />
             </Item>

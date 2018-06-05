@@ -13,6 +13,7 @@ import {
   Button,
   Text,
 } from 'native-base'
+import TokenUtils from '../../utils/TokenUtils';
 
 export default class Register extends Component {
   static navigationOptions = {
@@ -31,8 +32,84 @@ export default class Register extends Component {
     }
   }
 
-  _doRegister() {
-    console.log('do register');
+  _goTo(path) {
+    this.props.navigation.navigate(path)
+  }
+
+  async _doRegister() {
+    try {
+      let url = `http://10.0.3.2:8000/users/new/`
+
+      let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: this.state.username,
+          password: this.state.password,
+          first_name: this.state.firstName,
+          last_name: this.state.lastName,
+          email: this.state.email,
+        }),
+      })
+
+      let res = await response.json();
+
+      if (response.status >= 200 && response.status < 300) {
+        this.setState({ error: '' });
+
+        this._doLogin();
+      } else {
+        let error = JSON.stringify(res);
+        console.log('status zoado: ', res);
+        throw error;
+      }
+    } catch (error) {
+      this.setState({ error: JSON.stringify(error) });
+    }
+  }
+
+  async _doLogin() {
+    console.log('do login');
+    try {
+      let url = `http://10.0.3.2:8000/jwt-auth/`
+
+      let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: this.state.username,
+          password: this.state.password,
+        }),
+      })
+
+      let res = await response.json();
+
+      if (response.status >= 200 && response.status < 300) {
+        this.setState({ error: '' });
+        let accessToken = res.token;
+        let token = await TokenUtils.storeToken(accessToken);
+
+        console.log('token', token)
+
+        if (token) {
+          console.log('lets bora')
+          this.setState({ token });
+          this._goTo('SignedIn');
+        }
+      } else {
+        let error = JSON.stringify(res);
+        throw error;
+      }
+    } catch (error) {
+      console.log('erou', error)
+      this.setState({ error: JSON.stringify(error) });
+    }
   }
 
   render() {
