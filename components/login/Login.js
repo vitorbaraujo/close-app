@@ -76,7 +76,7 @@ export default class Cycle extends React.Component {
         throw error;
       }
     } catch(error) {
-      this.setState({ error: error });
+      this.setState({ error: JSON.stringify(error) });
     }
   }
 

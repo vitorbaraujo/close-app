@@ -4,7 +4,7 @@ import { Container, Text, Icon, Button, Header, Body, Left, Right, Title, Fab, L
 import { StackNavigator } from 'react-navigation';
 // import Cycles from './Cycles';
 import { ZeroMQ } from 'react-native-zeromq';
-
+import TokenUtils from '../../utils/TokenUtils';
 
 const cycles = [
   {
@@ -226,6 +226,8 @@ const cycles = [
   }
 ];
 
+const BASE_URL = 'http://10.0.3.2:8000/';
+
 export default class Homepage extends React.Component {
   static navigationOptions = {
     header: null
@@ -241,6 +243,7 @@ export default class Homepage extends React.Component {
       logs: [],
       ip: "tcp://192.168.15.5:5566",
       newIp: "tcp://192.168.15.5:5567",
+      currentUser: {},
     }
 
     // console.log('Creating socket...')
@@ -254,6 +257,25 @@ export default class Homepage extends React.Component {
     //   .catch((error) => {
     //     console.log('Error while creating socket', error)
     //   })
+  }
+
+  async componentWillMount() {
+    let token = await TokenUtils.getToken();
+    this.setState({ token: token });
+
+    let url = BASE_URL + 'users/me/'
+    let response = await fetch(url, {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `JWT ${this.state.token}`
+      })
+    });
+
+    let user = await response.json();
+
+    if (response.status >= 200 && response.status < 300) {
+      await this.setState({ currentUser: user })
+    }
   }
 
   _goTo(path, params) {
@@ -349,6 +371,8 @@ export default class Homepage extends React.Component {
   }
 
   render() {
+    let { currentUser } = this.state;
+
     return (
       <Container>
         <View style={styles.container}>
@@ -362,9 +386,9 @@ export default class Homepage extends React.Component {
               <Right>
                 <Button
                   transparent
-                  onPress={() => this._goTo('Profile')}
+                  onPress={() => this._goTo('Profile', { user: currentUser })}
                 >
-                  <Text style={styles.profileText} uppercase={false}>victornavarro</Text>
+                  <Text style={styles.profileText} uppercase={false}>{currentUser.username}</Text>
                   <Icon style={styles.profileIcon} type="FontAwesome" name="user" />
                 </Button>
               </Right>
