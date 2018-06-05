@@ -1,8 +1,13 @@
 import React from 'react';
-import { StackNavigator } from 'react-navigation'
+import {
+  StackNavigator,
+  createSwitchNavigator
+} from 'react-navigation'
 import Homepage from '../components/homepage/Homepage'
 import Profile from '../components/profile/Profile'
 import Cycle from '../components/cycle/Cycle'
+import Login from '../components/login/Login'
+import Register from '../components/login/Register'
 
 const mapNavigationStateParamsToProps = (SomeComponent) => {
   return class extends React.Component {
@@ -14,7 +19,21 @@ const mapNavigationStateParamsToProps = (SomeComponent) => {
   }
 }
 
-export default StackNavigator(
+export const SignedOut = StackNavigator(
+  {
+  Register: {
+    screen: mapNavigationStateParamsToProps(Register),
+  },
+    Login: {
+      screen: mapNavigationStateParamsToProps(Login),
+    },
+  },
+  {
+    initialRouteName: 'Register',
+  }
+);
+
+export const SignedIn = StackNavigator(
   {
     Homepage: {
       screen: mapNavigationStateParamsToProps(Homepage),
@@ -29,4 +48,20 @@ export default StackNavigator(
   {
     initialRouteName: 'Homepage',
   }
-)
+);
+
+export const createRootNavigator = (signedIn = false) => {
+  return createSwitchNavigator(
+    {
+      SignedIn: {
+        screen: SignedIn
+      },
+      SignedOut: {
+        screen: SignedOut
+      }
+    },
+    {
+      initialRouteName: signedIn ? 'SignedIn' : 'SignedOut'
+    }
+  );
+};

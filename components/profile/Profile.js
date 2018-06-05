@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Container, Button, Text, Header, Body, Left, Right, Icon, Title } from 'native-base';
+import TokenUtils from '../../utils/TokenUtils';
 
 export default class Profile extends React.Component {
   static navigationOptions = {
@@ -9,6 +10,15 @@ export default class Profile extends React.Component {
 
   _goTo(path) {
     this.props.navigation.navigate(path)
+  }
+
+  async _doLogout() {
+    let result = await TokenUtils.removeToken();
+    if (result) {
+      this.setState({ token: null });
+    }
+
+    this._goTo('SignedOut')
   }
 
   render() {
@@ -25,7 +35,14 @@ export default class Profile extends React.Component {
                   <Icon name="arrow-back" />
                 </Button>
               </Left>
-              <Body />
+              <Right>
+                <Button
+                  transparent
+                  onPress={() => this._doLogout()}
+                >
+                  <Text>Sair</Text>
+                </Button>
+              </Right>
             </Header>
             <Text>Profile photo and name</Text>
           </View>

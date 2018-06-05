@@ -7,8 +7,9 @@ import {
   YellowBox
 } from 'react-native';
 import { Container, Button, Text } from 'native-base';
-import RootStack from './navigation/Stack'
+import { createRootNavigator } from './navigation/Stack'
 import Login from './components/login/Login'
+import TokenUtils from './utils/TokenUtils';
 
 const warningsToIgnore = [
   'Warning: componentWillReceiveProps is deprecated and will be removed in the next major version. Use static getDerivedStateFromProps instead.',
@@ -27,9 +28,25 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      signedIn: false,
+    }
+  }
+
+  async componentDidMount() {
+    let response = await TokenUtils.isSignedIn();
+    if (response) {
+      this.setState({ signedIn: true })
+    }
+  }
+
   render() {
-    return <Login />;
-    // return <RootStack />;
+    const Layout = createRootNavigator(this.state.signedIn);
+
+    return <Layout />;
   }
 }
 

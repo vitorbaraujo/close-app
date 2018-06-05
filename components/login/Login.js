@@ -2,7 +2,6 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  AsyncStorage,
 } from 'react-native';
 import {
   Container,
@@ -13,9 +12,12 @@ import {
   Label,
   Button,
   Text,
+  Header,
+  Left,
+  Icon,
+  Body,
 } from 'native-base';
-
-const ACCESS_TOKEN = 'access_token';
+import TokenUtils from '../../utils/TokenUtils';
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -37,36 +39,9 @@ export default class Cycle extends React.Component {
     this.props.navigation.navigate(path)
   }
 
-  componentWillMount() {
-    this.getToken();
-  }
-
-  async storeToken(accessToken) {
-    try {
-      await AsyncStorage.setItem(ACCESS_TOKEN, accessToken);
-      this.getToken();
-    } catch(error) {
-      console.log('error storing token: ', error)
-    }
-  }
-
-  async getToken() {
-    try {
-      let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-      console.log('token is: ', token);
-      this.setState({ token: token });
-    } catch (error) {
-      console.log('error storing token: ', error)
-    }
-  }
-
-  async removeToken() {
-    try {
-      await AsyncStorage.removeItem(ACCESS_TOKEN);
-      this.getToken();
-    } catch(error) {
-      console.log('error while removing token', error)
-    }
+  async componentWillMount() {
+    let token = await TokenUtils.getToken();
+    this.setState({ token: token });
   }
 
   async _doLogin() {
@@ -90,21 +65,42 @@ export default class Cycle extends React.Component {
       if (response.status >= 200 && response.status < 300) {
         this.setState({ error: '' });
         let accessToken = res.token;
-        this.storeToken(accessToken);
-        // console.log('res token: ', accessToken);
+        let token = await TokenUtils.storeToken(accessToken);
+
+        if (token) {
+          this.setState({ token });
+          this._goTo('SignedIn');
+        }
       } else {
         let error = JSON.stringify(res);
         throw error;
       }
     } catch(error) {
       this.setState({ error: error });
-      console.log('error: ', error);
+    }
+  }
+
+  async _doLogout() {
+    let result = await TokenUtils.removeToken();
+    if (result) {
+      this.setState({ token: null });
     }
   }
 
   render() {
     return (
       <Container style={styles.container}>
+        <Header>
+          <Left>
+            <Button
+              transparent
+              onPress={() => this._goTo('Register')}
+            >
+              <Icon name="arrow-back" />
+            </Button>
+          </Left>
+          <Body />
+        </Header>
         <Content padder contentContainerStyle={styles.content}>
           <View>
             <Text>Token: {this.state.token} </Text>
@@ -134,7 +130,7 @@ export default class Cycle extends React.Component {
               full
               danger
               style={styles.formButton}
-              onPress={() => this.removeToken()}
+              onPress={() => this._doLogout()}
             >
               <Text>Sair</Text>
             </Button>
