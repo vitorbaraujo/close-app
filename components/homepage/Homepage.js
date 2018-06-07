@@ -1,6 +1,22 @@
 import React from 'react';
 import { StyleSheet, View, TouchableHighlight, FlatList } from 'react-native';
-import { Container, Text, Icon, Button, Header, Body, Left, Right, Title, Fab, ListItem } from 'native-base';
+import {
+  Container,
+  Text,
+  Icon,
+  Button,
+  Header,
+  Body,
+  Left,
+  Right,
+  Title,
+  Fab,
+  ListItem,
+  Form,
+  Item,
+  Label,
+  Input,
+} from 'native-base';
 import { StackNavigator } from 'react-navigation';
 // import Cycles from './Cycles';
 import { ZeroMQ } from 'react-native-zeromq';
@@ -241,9 +257,11 @@ export default class Homepage extends React.Component {
       socket: null,
       loading: true,
       logs: [],
-      ip: "tcp://192.168.15.5:5566",
+      ip: "tcp://192.168.4.1:5544",
       newIp: "tcp://192.168.15.5:5567",
       currentUser: {},
+      networkSsid: '',
+      networkPass: '',
     }
 
     // console.log('Creating socket...')
@@ -370,6 +388,10 @@ export default class Homepage extends React.Component {
     }
   }
 
+  _sendNetworkInfo() {
+    this._sendMessage(this.state.socket, `${this.state.networkSsid}$${this.state.networkPass}`)
+  }
+
   render() {
     let { currentUser } = this.state;
 
@@ -399,6 +421,22 @@ export default class Homepage extends React.Component {
             >
               <Text> Swap ip </Text>
             </Button>
+
+            {/* <Form stlye={{flexDirection: 'row'}}>
+              <Item floatingLabel>
+                <Label>SSID</Label>
+                <Input onChangeText={(text) => this.setState({ networkSsid: text })} />
+              </Item>
+              <Item floatingLabel>
+                <Label>Senha</Label>
+                <Input onChangeText={(text) => this.setState({ networkPass: text })} />
+              </Item>
+            </Form>
+            <Button
+              onPress={() => this._sendNetworkInfo()}
+            >
+              <Text> Send </Text>
+            </Button> */}
           </View>
           <View style={styles.timeline}>
             <FlatList
@@ -410,7 +448,7 @@ export default class Homepage extends React.Component {
               style={styles.addCycleButton}
               onPress={() => this._goTo('Cycle')}
             >
-              <Icon type="Feather" name="plus" />
+              <Icon type="Entypo" name="plus" />
             </Fab>
           </View>
         </View>
