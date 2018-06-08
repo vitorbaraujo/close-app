@@ -8,6 +8,7 @@ import Profile from '../components/profile/Profile'
 import Cycle from '../components/cycle/Cycle'
 import Login from '../components/login/Login'
 import Register from '../components/login/Register'
+import SendRasp from '../components/SendRasp'
 
 const mapNavigationStateParamsToProps = (SomeComponent) => {
   return class extends React.Component {
@@ -35,6 +36,9 @@ export const SignedOut = StackNavigator(
 
 export const SignedIn = StackNavigator(
   {
+    SendRasp: {
+      screen: mapNavigationStateParamsToProps(SendRasp),
+    },
     Homepage: {
       screen: mapNavigationStateParamsToProps(Homepage),
     },
@@ -46,7 +50,7 @@ export const SignedIn = StackNavigator(
     },
   },
   {
-    initialRouteName: 'Homepage',
+    initialRouteName: 'SendRasp',
   }
 );
 

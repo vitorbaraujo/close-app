@@ -14,6 +14,7 @@ import {
   Text,
 } from 'native-base'
 import TokenUtils from '../../utils/TokenUtils';
+import Url from '../../utils/Url';
 
 export default class Register extends Component {
   static navigationOptions = {
@@ -38,7 +39,7 @@ export default class Register extends Component {
 
   async _doRegister() {
     try {
-      let url = `http://10.0.3.2:8000/users/new/`
+      let url = Url.baseUrl + 'users/new/';
 
       let response = await fetch(url, {
         method: 'POST',
@@ -150,7 +151,9 @@ export default class Register extends Component {
               style={styles.formButton}
               onPress={() => this._doRegister()}
             >
-              <Text>Registrar</Text>
+              <View>
+                <Text>Registrar</Text>
+              </View>
             </Button>
 
             <Text style={styles.alreadyRegistered}>
@@ -161,7 +164,9 @@ export default class Register extends Component {
               full
               onPress={() => this.props.navigation.navigate("Login")}
             >
-              <Text>Entrar</Text>
+              <View>
+                <Text>Entrar</Text>
+              </View>
             </Button>
 
             <Text style={{ color: 'red', alignSelf: 'center' }}>

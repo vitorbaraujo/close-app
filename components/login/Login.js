@@ -18,6 +18,7 @@ import {
   Body,
 } from 'native-base';
 import TokenUtils from '../../utils/TokenUtils';
+import Url from '../../utils/Url';
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -46,7 +47,7 @@ export default class Cycle extends React.Component {
 
   async _doLogin() {
     try {
-      let url = `http://10.0.3.2:8000/jwt-auth/`
+      let url = Url.baseUrl + 'jwt-auth/';
 
       let response = await fetch(url, {
         method: 'POST',
@@ -107,7 +108,9 @@ export default class Cycle extends React.Component {
               style={styles.formButton}
               onPress={() => this._doLogin()}
             >
-              <Text>Entrar</Text>
+              <View>
+                <Text>Entrar</Text>
+              </View>
             </Button>
 
             <Text style={styles.newUser}>
@@ -118,7 +121,9 @@ export default class Cycle extends React.Component {
               full
               onPress={() => this.props.navigation.navigate("Register")}
             >
-              <Text>Registrar</Text>
+              <View>
+                <Text>Registrar</Text>
+              </View>
             </Button>
 
             <Text style={{ color: 'red', alignSelf: 'center' }}>

@@ -18,24 +18,23 @@ const TokenUtils = {
     console.log('why so serious?')
     let token = null;
     try {
+      console.log('getting token');
       token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      console.log('token got', token);
+      return token;
     } catch (error) {
       console.log('error storing token: ', error)
     }
-
-    return token;
   },
   removeToken: async function() {
     let returnValue = false;
     try {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
       let token = await this.getToken();
-      returnValue = token === null;
+      return returnValue = (token === null);
     } catch(error) {
       console.log('error while removing token', error)
     }
-
-    return returnValue;
   },
   isSignedIn: async function() {
     let response = await this.getToken();
