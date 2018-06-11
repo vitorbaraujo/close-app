@@ -7,25 +7,34 @@ import {
 } from 'native-base';
 import CycleHistory from './CycleHistory';
 import CycleStats from './CycleStats';
+import { goTo } from '../../utils/NavigationUtils';
+
+const defaultCycle = {
+  "beer": 'Default beer',
+  "start_time": 'oi oi',
+  "end_time": 'oi oi',
+  "beer_count": 0,
+  "logs": []
+}
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
     header: null
   }
 
-  constructor() {
-    super();
-  }
+  constructor(props) {
+    super(props);
 
-  componentWillMount() {
-    console.log('PROOOOOPS', this.props);
-  }
+    this.state = {
+      cycle: this.props.cycle || defaultCycle,
+    }
 
-  _goTo(path) {
-    this.props.navigation.navigate(path)
+    this.navigation = props.navigation;
   }
 
   render() {
+    let { cycle } = this.state;
+
     return (
       <Container>
         <View style={styles.container}>
@@ -34,18 +43,20 @@ export default class Cycle extends React.Component {
               <Left>
                 <Button
                   transparent
-                  onPress={() => this._goTo('Homepage')}
+                  onPress={() => goTo(this.navigation, 'Homepage')}
                 >
-                  <Icon name="arrow-back" />
+                  <View>
+                    <Icon name="arrow-back" />
+                  </View>
                 </Button>
               </Left>
               <Body />
             </Header>
-            <Text>{this.props.cycle.beer}</Text>
+            <Text>{cycle.beer}</Text>
           </View>
           <View style={styles.profileInfo}>
             <Tabs
-              initialPage={0}
+              initialPage={1}
             >
               <Tab
                 heading="Estatísticas"

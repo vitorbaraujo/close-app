@@ -16,7 +16,8 @@ import {
   Input,
   Label,
 } from 'native-base';
-import TokenUtils from '../../utils/TokenUtils';
+import { removeToken } from '../../utils/TokenUtils';
+import { goTo } from '../../utils/NavigationUtils';
 
 export default class Profile extends React.Component {
   static navigationOptions = {
@@ -29,19 +30,18 @@ export default class Profile extends React.Component {
     this.state = {
       user: props.user,
     }
+
+    this.navigation = props.navigation;
   }
 
-  _goTo(path) {
-    this.props.navigation.navigate(path)
-  }
-
-  async _doLogout() {
-    let result = await TokenUtils.removeToken();
+  _doLogout() {
+    let result = removeToken();
+    console.log(result);
     if (result) {
       this.setState({ token: null });
     }
 
-    this._goTo('SignedOut')
+    goTo(this.navigation, 'SignedOut')
   }
 
   render() {
@@ -53,7 +53,7 @@ export default class Profile extends React.Component {
           <Left>
             <Button
               transparent
-              onPress={() => this._goTo('Homepage')}
+              onPress={() => goTo(this.navigation, 'Homepage')}
             >
               <Icon name="arrow-back" />
             </Button>

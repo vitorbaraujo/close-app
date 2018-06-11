@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  StackNavigator,
+  createStackNavigator,
   createSwitchNavigator
 } from 'react-navigation'
 import Homepage from '../components/homepage/Homepage'
@@ -20,7 +20,7 @@ const mapNavigationStateParamsToProps = (SomeComponent) => {
   }
 }
 
-export const SignedOut = StackNavigator(
+export const SignedOut = createStackNavigator(
   {
   Register: {
     screen: mapNavigationStateParamsToProps(Register),
@@ -34,7 +34,7 @@ export const SignedOut = StackNavigator(
   }
 );
 
-export const SignedIn = StackNavigator(
+export const SignedIn = createStackNavigator(
   {
     SendRasp: {
       screen: mapNavigationStateParamsToProps(SendRasp),
@@ -50,7 +50,7 @@ export const SignedIn = StackNavigator(
     },
   },
   {
-    initialRouteName: 'SendRasp',
+    initialRouteName: 'Homepage',
   }
 );
 

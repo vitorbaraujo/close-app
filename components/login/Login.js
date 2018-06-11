@@ -17,16 +17,17 @@ import {
   Icon,
   Body,
 } from 'native-base';
-import TokenUtils from '../../utils/TokenUtils';
+import { getToken, saveToken } from '../../utils/TokenUtils';
 import Url from '../../utils/Url';
+import { goTo } from '../../utils/NavigationUtils';
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
     header: null
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       username: '',
@@ -34,14 +35,12 @@ export default class Cycle extends React.Component {
       error: '',
       token: null,
     }
-  }
 
-  _goTo(path) {
-    this.props.navigation.navigate(path)
+    this.navigation = props.navigation;
   }
 
   async componentWillMount() {
-    let token = await TokenUtils.getToken();
+    let token = getToken();
     this.setState({ token: token });
   }
 
@@ -66,11 +65,11 @@ export default class Cycle extends React.Component {
       if (response.status >= 200 && response.status < 300) {
         this.setState({ error: '' });
         let accessToken = res.token;
-        let token = await TokenUtils.storeToken(accessToken);
+        let token = saveToken(accessToken);
 
         if (token) {
           this.setState({ token });
-          this._goTo('SignedIn');
+          goTo(this.navigation, 'SignedIn');
         }
       } else {
         let error = JSON.stringify(res);
@@ -119,7 +118,7 @@ export default class Cycle extends React.Component {
 
             <Button
               full
-              onPress={() => this.props.navigation.navigate("Register")}
+              onPress={() => goTo(this.navigation, "Register")}
             >
               <View>
                 <Text>Registrar</Text>

@@ -18,8 +18,9 @@ import {
   Input,
 } from 'native-base';
 import { StackNavigator } from 'react-navigation';
-import TokenUtils from '../../utils/TokenUtils';
+import { getToken } from '../../utils/TokenUtils';
 import Url from '../../utils/Url';
+import { goTo } from '../../utils/NavigationUtils';
 
 const cycles = [
   {
@@ -246,8 +247,8 @@ export default class Homepage extends React.Component {
     header: null
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       socket: null,
@@ -257,40 +258,45 @@ export default class Homepage extends React.Component {
       networkSsid: '',
       networkPass: '',
     }
+
+    this.navigation = props.navigation;
   }
 
   async componentWillMount() {
-    let token = await TokenUtils.getToken();
-    this.setState({ token: token });
 
-    let url = Url.baseUrl + 'users/me/'
-    let response = await fetch(url, {
-      method: 'get',
-      headers: new Headers({
-        'Authorization': `JWT ${this.state.token}`
-      })
-    });
+    try {
+      let token = getToken();
+      this.setState({ token: token });
 
-    let user = await response.json();
+      let url = Url.baseUrl + 'users/me/'
+      let response = await fetch(url, {
+        method: 'get',
+        headers: new Headers({
+          'Authorization': `JWT ${this.state.token}`
+        })
+      });
 
-    if (response.status >= 200 && response.status < 300) {
-      await this.setState({ currentUser: user })
+      console.log('response', response);
+
+      if (response.status >= 200 && response.status < 300) {
+        let user = await response.json();
+        console.log('USER', user);
+        await this.setState({ currentUser: user })
+      }
+    } catch(error) {
+      console.log('error while fetching', error)
     }
-  }
-
-  _goTo(path, params) {
-    this.props.navigation.navigate(path, params)
   }
 
   _keyExtractor = (item, index) => index.toString();
 
-  _renderItem = ({ item }) => (
-    <ListItem
-      onPress={() => this._goTo('Cycle', { cycle: item })}
+  _renderItem = ({ item }) => {
+    return <ListItem
+      onPress={() => goTo(this.navigation, 'Cycle', { cycle: item })}
     >
-      <Text>{item.id} oi - {item.beer} - {item.start_time}</Text>
+      <Text>{item.id} oi - {item.start_time}</Text>
     </ListItem>
-  )
+  }
 
   render() {
     let { currentUser } = this.state;
@@ -308,7 +314,7 @@ export default class Homepage extends React.Component {
               <Right>
                 <Button
                   transparent
-                  onPress={() => this._goTo('Profile', { user: currentUser })}
+                  onPress={() => goTo(this.navigation, 'Profile', { user: currentUser })}
                 >
                   <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.profileText} uppercase={false}>{currentUser.username}</Text>
@@ -326,7 +332,7 @@ export default class Homepage extends React.Component {
             />
             <Fab
               style={styles.addCycleButton}
-              onPress={() => this._goTo('Cycle')}
+              onPress={() => goTo(this.navigation, 'SendRasp')}
             >
               <Icon type="Entypo" name="plus" />
             </Fab>

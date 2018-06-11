@@ -13,8 +13,9 @@ import {
   Button,
   Text,
 } from 'native-base'
-import TokenUtils from '../../utils/TokenUtils';
+import { saveToken } from '../../utils/TokenUtils';
 import Url from '../../utils/Url';
+import { goTo } from '../../utils/NavigationUtils';
 
 export default class Register extends Component {
   static navigationOptions = {
@@ -31,10 +32,8 @@ export default class Register extends Component {
       lastName: '',
       email: '',
     }
-  }
 
-  _goTo(path) {
-    this.props.navigation.navigate(path)
+    this.navigation = props.navigation;
   }
 
   async _doRegister() {
@@ -94,21 +93,21 @@ export default class Register extends Component {
       if (response.status >= 200 && response.status < 300) {
         this.setState({ error: '' });
         let accessToken = res.token;
-        let token = await TokenUtils.storeToken(accessToken);
+        let token = saveToken(accessToken);
 
         console.log('token', token)
 
         if (token) {
           console.log('lets bora')
           this.setState({ token });
-          this._goTo('SignedIn');
+          goTo(this.navigation, 'SignedIn');
         }
       } else {
         let error = JSON.stringify(res);
         throw error;
       }
     } catch (error) {
-      console.log('erou', error)
+      console.log('errou', error)
       this.setState({ error: JSON.stringify(error) });
     }
   }
@@ -162,7 +161,7 @@ export default class Register extends Component {
 
             <Button
               full
-              onPress={() => this.props.navigation.navigate("Login")}
+              onPress={() => goTo(this.navigation, "Login")}
             >
               <View>
                 <Text>Entrar</Text>

@@ -18,6 +18,7 @@ import {
   Body,
 } from 'native-base';
 import { ZeroMQ } from 'react-native-zeromq';
+import { goTo } from '../utils/NavigationUtils';
 
 export default class SendRasp extends React.Component {
   static navigationOptions = {
@@ -30,13 +31,15 @@ export default class SendRasp extends React.Component {
     this.state = {
       ssid: '',
       password: '',
-      ip: "tcp://0.tcp.ngrok.io:11906",
+      ip: "tcp://192.168.4.1:5544",
       error: '',
       showPassword: false,
       connected: false,
       socket: null,
       sent: false,
     }
+
+    this.navigation = props.navigation;
   }
 
   async _createSocket() {
@@ -53,10 +56,6 @@ export default class SendRasp extends React.Component {
     } catch (error) {
       console.log('error while creating socket');
     }
-  }
-
-  _goTo(path) {
-    this.props.navigation.navigate(path)
   }
 
   async _sendInfo() {
@@ -83,7 +82,15 @@ export default class SendRasp extends React.Component {
       this.state.socket.close();
       this.setState({ connected: false, socket: null, sent: false, });
 
-      this._goTo('Homepage');
+      goTo(this.navigation, 'Cycle', {
+        cycle: {
+          "beer": 'ALAA',
+          "start_time": "2018-05-29T01:05:47.751081Z",
+          "end_time": "2018-05-29T01:05:40.579459Z",
+          "beer_count": 0,
+          "logs": []
+        }
+      });
     }
   }
 
