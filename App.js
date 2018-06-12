@@ -4,7 +4,7 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
-  YellowBox
+  YellowBox,
 } from 'react-native';
 import { Root } from 'native-base';
 import { Container, Button, Text } from 'native-base';

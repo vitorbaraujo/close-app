@@ -52,11 +52,11 @@ export default class Cycle extends React.Component {
               </Left>
               <Body />
             </Header>
-            <Text>{cycle.beer}</Text>
+            <Text>{cycle.beer.name}</Text>
           </View>
           <View style={styles.profileInfo}>
             <Tabs
-              initialPage={1}
+              initialPage={0}
             >
               <Tab
                 heading="Estatísticas"

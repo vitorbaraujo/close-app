@@ -1,6 +1,6 @@
 import { getToken, saveToken } from './TokenUtils';
 
-let uri = 'https://fe6d1775.ngrok.io/'
+let uri = 'http://c12415e2.ngrok.io/'
 
 let headers = {
   'Accept': "application/json",
