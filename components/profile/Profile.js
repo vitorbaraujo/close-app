@@ -34,14 +34,18 @@ export default class Profile extends React.Component {
     this.navigation = props.navigation;
   }
 
-  _doLogout() {
-    let result = removeToken();
-    console.log(result);
-    if (result) {
-      this.setState({ token: null });
-    }
+  async _doLogout() {
+    try {
+      let result = await removeToken();
+      console.log(result);
+      if (result) {
+        this.setState({ token: null });
+      }
 
-    goTo(this.navigation, 'SignedOut')
+      goTo(this.navigation, 'SignedOut')
+    } catch(error) {
+      console.log('error logging out')
+    }
   }
 
   render() {

@@ -17,9 +17,8 @@ import {
   Icon,
   Body,
 } from 'native-base';
-import { getToken, saveToken } from '../../utils/TokenUtils';
-import Url from '../../utils/Url';
 import { goTo } from '../../utils/NavigationUtils';
+import { login } from '../../utils/Api';
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -39,44 +38,19 @@ export default class Cycle extends React.Component {
     this.navigation = props.navigation;
   }
 
-  async componentWillMount() {
-    let token = getToken();
-    this.setState({ token: token });
-  }
-
-  async _doLogin() {
+  async _login() {
     try {
-      let url = Url.baseUrl + 'jwt-auth/';
-
-      let response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: this.state.username,
-          password: this.state.password,
-        }),
+      let result = await login({
+        username: this.state.username,
+        password: this.state.password,
       })
 
-      let res = await response.json();
-
-      if (response.status >= 200 && response.status < 300) {
-        this.setState({ error: '' });
-        let accessToken = res.token;
-        let token = saveToken(accessToken);
-
-        if (token) {
-          this.setState({ token });
-          goTo(this.navigation, 'SignedIn');
-        }
-      } else {
-        let error = JSON.stringify(res);
-        throw error;
+      if (result) {
+        this.setState({ signedIn: true })
+        goTo(this.navigation, 'SignedIn')
       }
     } catch(error) {
-      this.setState({ error: JSON.stringify(error) });
+      console.log('[login screen] error log in', error)
     }
   }
 
@@ -105,7 +79,7 @@ export default class Cycle extends React.Component {
               full
               success
               style={styles.formButton}
-              onPress={() => this._doLogin()}
+              onPress={() => this._login()}
             >
               <View>
                 <Text>Entrar</Text>

@@ -7,7 +7,7 @@ export async function saveToken(token) {
     let response = await AsyncStorage.setItem(ACCESS_TOKEN, token);
     return response;
   } catch(error) {
-    console.log('error saving token', error);
+    console.log('[saveToken] error saving token', error);
   }
 }
 
@@ -16,7 +16,7 @@ export async function getToken() {
     let response = await AsyncStorage.getItem(ACCESS_TOKEN);
     return response;
   } catch(error) {
-    console.log('error getting token', error);
+    console.log('[getToken] error getting token', error);
   }
 }
 
@@ -25,11 +25,15 @@ export async function removeToken() {
     let response = await AsyncStorage.removeItem(ACCESS_TOKEN);
     return response;
   } catch(error) {
-    console.log('error removing token', error);
+    console.log('[removeToken] error removing token', error);
   }
 }
 
-export function isSignedIn() {
-  let response = getToken();
-  return response !== null;
+export async function isSignedIn() {
+  try {
+    let response = await getToken();
+    return response !== null;
+  } catch(error) {
+    console.log('[isSignedIn] error while check signed', error);
+  }
 }

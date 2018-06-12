@@ -19,8 +19,8 @@ import {
 } from 'native-base';
 import { StackNavigator } from 'react-navigation';
 import { getToken } from '../../utils/TokenUtils';
-import Url from '../../utils/Url';
 import { goTo } from '../../utils/NavigationUtils';
+import { get } from '../../utils/Api';
 
 const cycles = [
   {
@@ -262,29 +262,14 @@ export default class Homepage extends React.Component {
     this.navigation = props.navigation;
   }
 
-  async componentWillMount() {
-
+  async componentDidMount() {
     try {
-      let token = getToken();
-      this.setState({ token: token });
-
-      let url = Url.baseUrl + 'users/me/'
-      let response = await fetch(url, {
-        method: 'get',
-        headers: new Headers({
-          'Authorization': `JWT ${this.state.token}`
-        })
-      });
-
-      console.log('response', response);
-
-      if (response.status >= 200 && response.status < 300) {
-        let user = await response.json();
-        console.log('USER', user);
-        await this.setState({ currentUser: user })
+      let user = await get('users/me/');
+      if (user) {
+        this.setState({ currentUser: user })
       }
     } catch(error) {
-      console.log('error while fetching', error)
+      console.log('error on get', error);
     }
   }
 

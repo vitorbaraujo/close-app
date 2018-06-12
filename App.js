@@ -6,10 +6,11 @@ import {
   TouchableHighlight,
   YellowBox
 } from 'react-native';
+import { Root } from 'native-base';
 import { Container, Button, Text } from 'native-base';
 import { createRootNavigator } from './navigation/Stack'
 import Login from './components/login/Login'
-import { isSignedIn } from './utils/TokenUtils';
+import { isSignedIn, getToken } from './utils/TokenUtils';
 
 const warningsToIgnore = [
   'Warning: componentWillReceiveProps is deprecated and will be removed in the next major version. Use static getDerivedStateFromProps instead.',
@@ -37,15 +38,28 @@ export default class App extends Component<Props> {
   }
 
   async componentDidMount() {
-    if (isSignedIn()) {
-      this.setState({ signedIn: true })
+    try {
+      let signed = await isSignedIn();
+      if (signed) {
+        let token = await getToken();
+        console.log('token', token);
+        this.setState({ signedIn: true })
+      } else {
+        console.log('not signed in')
+      }
+    } catch(error) {
+      console.log('error', error);
     }
   }
 
   render() {
     const Layout = createRootNavigator(this.state.signedIn);
 
-    return <Layout />;
+    return (
+      <Root>
+        <Layout />
+      </Root>
+    )
   }
 }
 

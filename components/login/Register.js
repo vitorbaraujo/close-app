@@ -14,8 +14,8 @@ import {
   Text,
 } from 'native-base'
 import { saveToken } from '../../utils/TokenUtils';
-import Url from '../../utils/Url';
 import { goTo } from '../../utils/NavigationUtils';
+import { register, login } from '../../utils/Api';
 
 export default class Register extends Component {
   static navigationOptions = {
@@ -31,84 +31,48 @@ export default class Register extends Component {
       firstName: '',
       lastName: '',
       email: '',
+      loading: false,
     }
 
     this.navigation = props.navigation;
   }
 
-  async _doRegister() {
+  async _register() {
     try {
-      let url = Url.baseUrl + 'users/new/';
-
-      let response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: this.state.username,
-          password: this.state.password,
-          first_name: this.state.firstName,
-          last_name: this.state.lastName,
-          email: this.state.email,
-        }),
+      this.setState({ loading: true })
+      let result = await register({
+        username: this.state.username,
+        password: this.state.password,
+        first_name: this.state.firstName,
+        last_name: this.state.lastName,
+        email: this.state.email,
       })
 
-      let res = await response.json();
+      console.log('result', result);
 
-      if (response.status >= 200 && response.status < 300) {
-        this.setState({ error: '' });
-
-        this._doLogin();
+      if (result) {
+        await this._login();
       } else {
-        let error = JSON.stringify(res);
-        console.log('status zoado: ', res);
-        throw error;
+        this.setState({ loading: false })
       }
-    } catch (error) {
-      this.setState({ error: JSON.stringify(error) });
+    } catch(error) {
+      console.log('error on _register', error)
     }
   }
 
-  async _doLogin() {
-    console.log('do login');
+  async _login() {
     try {
-      let url = `http://10.0.3.2:8000/jwt-auth/`
-
-      let response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: this.state.username,
-          password: this.state.password,
-        }),
+      let result = await login({
+        username: this.state.username,
+        password: this.state.password,
       })
 
-      let res = await response.json();
-
-      if (response.status >= 200 && response.status < 300) {
-        this.setState({ error: '' });
-        let accessToken = res.token;
-        let token = saveToken(accessToken);
-
-        console.log('token', token)
-
-        if (token) {
-          console.log('lets bora')
-          this.setState({ token });
-          goTo(this.navigation, 'SignedIn');
-        }
-      } else {
-        let error = JSON.stringify(res);
-        throw error;
+      if (result) {
+        this.setState({ signedIn: true })
+        goTo(this.navigation, 'SignedIn')
       }
     } catch (error) {
-      console.log('errou', error)
-      this.setState({ error: JSON.stringify(error) });
+      console.log('[login screen] error log in', error)
     }
   }
 
@@ -148,10 +112,10 @@ export default class Register extends Component {
               success
               full
               style={styles.formButton}
-              onPress={() => this._doRegister()}
+              onPress={() => this._register()}
             >
               <View>
-                <Text>Registrar</Text>
+                <Text>{this.state.loading ? 'Registrando...' : 'Registrar' }</Text>
               </View>
             </Button>
 
