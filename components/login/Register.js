@@ -11,11 +11,12 @@ import {
   Input,
   Label,
   Button,
-  Text,
+  Icon,
 } from 'native-base'
 import { saveToken } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
 import { register, login } from '../../utils/Api';
+import CText from '../commons/CText';
 
 export default class Register extends Component {
   static navigationOptions = {
@@ -32,6 +33,14 @@ export default class Register extends Component {
       lastName: '',
       email: '',
       loading: false,
+      showPassword: false,
+      form: [
+        { label: 'Nome', field: 'firstName' },
+        { label: 'Sobrenome', field: 'lastName' },
+        { label: 'Nome de usuário', field: 'username' },
+        { label: 'E-mail', field: 'email' },
+        { label: 'Senha', field: 'password' },
+      ]
     }
 
     this.navigation = props.navigation;
@@ -76,65 +85,72 @@ export default class Register extends Component {
     }
   }
 
+  _updateText = (label, text) => {
+    this.setState({ [label]: text })
+  }
+
   render() {
+    let { form, showPassword } = this.state
+
     return (
       <Container>
         <Content padder contentContainerStyle={styles.content}>
           <View>
-            <Text style={styles.welcomeText}>Registre-se</Text>
+            <CText
+              text="Registre-se"
+              style={styles.welcomeText}
+            />
             <Form>
-              <Item floatingLabel>
-                <Label>Nome</Label>
-                <Input onChangeText={(text) => this.setState({ firstName: text })} />
-              </Item>
-              <Item floatingLabel>
-                <Label>Sobrenome</Label>
-                <Input onChangeText={(text) => this.setState({ lastName: text })} />
-              </Item>
-              <Item floatingLabel>
-                <Label>Nome de usuário</Label>
-                <Input onChangeText={(text) => this.setState({ username: text })} />
-              </Item>
-              <Item floatingLabel>
-                <Label>E-mail</Label>
-                <Input onChangeText={(text) => this.setState({ email: text })} />
-              </Item>
-              <Item floatingLabel last>
-                <Label>Senha</Label>
-                <Input
-                  secureTextEntry={true}
-                  onChangeText={(text) => this.setState({ password: text })}
-                />
-              </Item>
+              {form.map((f, i) =>
+                <Item key={i} floatingLabel>
+                  <Label style={styles.font}>{f.label}</Label>
+                  <Input
+                    style={styles.font}
+                    secureTextEntry={f.field === 'password' && !showPassword}
+                    onChangeText={(text) => this._updateText(f.field, text)}
+                  />
+                  {f.field === 'password' &&
+                    <Icon
+                      type="Entypo"
+                      name='eye-with-line'
+                      onPress={() => this.setState({ showPassword: !this.state.showPassword })}
+                      style={{ color: 'grey' }}
+                    />
+                  }
+                </Item>
+              )}
             </Form>
 
             <Button
-              success
               full
               style={styles.formButton}
               onPress={() => this._register()}
             >
               <View>
-                <Text>{this.state.loading ? 'Registrando...' : 'Registrar' }</Text>
+                <CText text={this.state.loading ? 'Registrando...' : 'Registrar' } />
               </View>
             </Button>
 
-            <Text style={styles.alreadyRegistered}>
-              Já tem uma conta? Clique no botão abaixo para entrar
-            </Text>
+            <CText
+              style={styles.alreadyRegistered}
+              subsubtitle
+              text="Já tem uma conta? Clique no botão abaixo para entrar"
+            />
 
             <Button
+              style={{ backgroundColor: '#874000' }}
               full
               onPress={() => goTo(this.navigation, "Login")}
             >
               <View>
-                <Text>Entrar</Text>
+                <CText text="Entrar" />
               </View>
             </Button>
 
-            <Text style={{ color: 'red', alignSelf: 'center' }}>
-              {this.state.error}
-            </Text>
+            <CText
+              style={{ color: 'red', alignSelf: 'center' }}
+              text={this.state.error}
+            />
           </View>
         </Content>
       </Container>
@@ -149,21 +165,26 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: 'white',
   },
   welcomeText: {
     fontSize: 30,
     textAlign: 'center',
-    color: 'green',
+    color: '#db8000',
+  },
+  font: {
+    fontFamily: 'Lato-Regular'
   },
   formButton: {
-    marginTop: 50
+    marginTop: 50,
+    backgroundColor: '#452103'
   },
   alreadyRegistered: {
-    fontSize: 10,
-    color: '#567bb7',
+    fontSize: 12,
+    color: '#db8000',
     textAlign: 'center',
     marginTop: 50,
     marginBottom: 20,
-  }
+  },
 })

@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "gravatar": "^1.6.0",
     "javascript-time-ago": "^1.0.30",
     "moment": "^2.22.2",
     "native-base": "^2.4.5",

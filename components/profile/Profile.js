@@ -15,9 +15,12 @@ import {
   Content,
   Input,
   Label,
+  Thumbnail,
 } from 'native-base';
 import { removeToken } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
+import CText from '../commons/CText';
+import gravatar from 'gravatar';
 
 export default class Profile extends React.Component {
   static navigationOptions = {
@@ -29,9 +32,20 @@ export default class Profile extends React.Component {
 
     this.state = {
       user: props.user,
+      avatar: null,
+      editing: false,
     }
 
     this.navigation = props.navigation;
+  }
+
+  async componentDidMount() {
+    try {
+      let url = await gravatar.url(this.state.user.email);
+      this.setState({ avatar: `https:${url}` })
+    } catch(error) {
+      console.log('[profile] error', error)
+    }
   }
 
   async _doLogout() {
@@ -49,7 +63,7 @@ export default class Profile extends React.Component {
   }
 
   render() {
-    let { user } = this.state;
+    let { user, editing } = this.state;
 
     return (
       <Container>
@@ -73,27 +87,55 @@ export default class Profile extends React.Component {
         </Header>
         <Content contentContainerStyle={{ flex: 1 }}>
           <View style={styles.main}>
-            <Text>Nome de usuário: {user.username}</Text>
-            <Text>E-mail: {user.email}</Text>
+            <Thumbnail
+              source={{ uri: this.state.avatar }}
+              style={{ height: 120, width: 120}}
+            />
+            <CText
+              bold
+              text={`${user.first_name} ${user.last_name}`}
+              style={{ color: 'white', fontSize: 20 }}
+            />
           </View>
           <View style={styles.profileInfo}>
             <Item stackedLabel disabled>
               <Label>Nome</Label>
-              <Input disabled value={user.first_name} />
+              <Input disabled={!editing} value={user.first_name} />
             </Item>
             <Item stackedLabel disabled>
               <Label>Sobrenome</Label>
-              <Input disabled value={user.last_name} />
+              <Input disabled={!editing} value={user.last_name} />
             </Item>
             <Item stackedLabel disabled>
               <Label>Nome de usuário</Label>
-              <Input disabled value={user.username} />
+              <Input disabled={!editing} value={user.username} />
             </Item>
             <Item stackedLabel disabled>
               <Label>E-mail</Label>
-              <Input disabled value={user.email} />
+              <Input disabled={!editing} value={user.email} />
             </Item>
           </View>
+          {/* <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 20 }}>
+            {
+              !editing ?
+                (<Button
+                  style={{ backgroundColor: '#ee5622' }}
+                  onPress={() => this.setState({ editing: true })}
+                  >
+                  <View>
+                    <Text>Editar</Text>
+                  </View>
+                </Button>) :
+                (<Button
+                  style={{ backgroundColor: '#ee5622' }}
+                  onPress={() => this.setState({ editing: false })}
+                >
+                  <View>
+                    <Text>Salvar</Text>
+                  </View>
+                </Button>)
+            }
+          </View> */}
         </Content>
       </Container>
     )
@@ -115,6 +157,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#eca72c',
     paddingLeft: 10,
     paddingRight: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   profileInfo: {
     flex: 2,

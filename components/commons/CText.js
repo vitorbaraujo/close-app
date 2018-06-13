@@ -7,7 +7,6 @@ export default class CText extends Component {
     const { text, bold, style, subtitle, subsubtitle } = this.props;
 
     let textStyle = [{
-      ...style,
       fontFamily: bold ? 'Lato-Bold' : 'Lato-Regular',
     }]
 
@@ -18,7 +17,7 @@ export default class CText extends Component {
       textStyle = textStyle.concat(styles.subsubtitle)
     }
     return (
-       <Text style={textStyle}>{text}</Text>
+       <Text style={[...textStyle, style]}>{text}</Text>
     )
   }
 }

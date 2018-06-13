@@ -104,7 +104,7 @@ export default class Homepage extends React.Component {
   }
 
   render() {
-    let { currentUser } = this.state;
+    let { currentUser, cycles } = this.state;
 
     return (
       <Container>
@@ -130,12 +130,25 @@ export default class Homepage extends React.Component {
           <View style={styles.main}>
           </View>
           <View style={styles.timeline}>
-            <FlatList
-              data={this.state.cycles}
-              extraData={this.state}
-              keyExtractor={this._keyExtractor}
-              renderItem={this._renderItem}
-            />
+            {
+             cycles.length ?
+                (
+                  <FlatList
+                    data={cycles}
+                    extraData={this.state}
+                    keyExtractor={this._keyExtractor}
+                    renderItem={this._renderItem}
+                  />
+                ) :
+                (
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <CText
+                      style={{ color: '#221e22', fontSize: 25, textAlign: 'center' }}
+                      text="Você ainda não tem ciclos de produção"
+                    />
+                  </View>
+                )
+            }
           </View>
         </Content>
       </Container>

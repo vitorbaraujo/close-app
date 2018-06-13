@@ -30,7 +30,7 @@ export const SignedOut = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'Register',
+    initialRouteName: 'Login',
   }
 );
 

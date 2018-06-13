@@ -67,7 +67,7 @@ export default class Cycle extends React.Component {
                 <CText
                   text={getDuration(cycle)}
                   style={{ color: 'white' }}
-                  />
+                />
               </View>
               <View>
                 <CText

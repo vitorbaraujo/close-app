@@ -12,13 +12,11 @@ import {
   Label,
   Button,
   Text,
-  Header,
-  Left,
   Icon,
-  Body,
 } from 'native-base';
 import { goTo } from '../../utils/NavigationUtils';
 import { login } from '../../utils/Api';
+import CText from '../commons/CText';
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -33,6 +31,11 @@ export default class Cycle extends React.Component {
       password: '',
       error: '',
       token: null,
+      showPassword: false,
+      form: [
+        { label: 'Nome de usuário', field: 'username' },
+        { label: 'Senha', field: 'password' },
+      ]
     }
 
     this.navigation = props.navigation;
@@ -54,48 +57,65 @@ export default class Cycle extends React.Component {
     }
   }
 
+  _updateText = (label, text) => {
+    this.setState({ [label]: text })
+  }
+
   render() {
+    let { form, showPassword } = this.state
+
     return (
       <Container style={styles.container}>
         <Content padder contentContainerStyle={styles.content}>
           <View>
-            {/* <Text>Token: {this.state.token} </Text> */}
-            <Text style={styles.welcomeText}>Bem-vindo</Text>
+            <CText
+              text="Bem-vindo ao Close"
+              style={styles.welcomeText}
+            />
             <Form>
-              <Item floatingLabel>
-                <Label>Nome de usuário</Label>
-                <Input onChangeText={(text) => this.setState({ username: text })} />
-              </Item>
-              <Item floatingLabel last>
-                <Label>Senha</Label>
-                <Input
-                  secureTextEntry={true}
-                  onChangeText={(text) => this.setState({ password: text })}
-                />
-              </Item>
+              {form.map((f, i) =>
+                <Item key={i} floatingLabel>
+                  <Label style={styles.font}>{f.label}</Label>
+                  <Input
+                    style={styles.font}
+                    secureTextEntry={f.field === 'password' && !showPassword}
+                    onChangeText={(text) => this._updateText(f.field, text)}
+                  />
+                  {f.field === 'password' &&
+                    <Icon
+                      type="Entypo"
+                      name='eye-with-line'
+                      onPress={() => this.setState({ showPassword: !this.state.showPassword })}
+                      style={{ color: 'grey' }}
+                    />
+                  }
+                </Item>
+              )}
             </Form>
 
             <Button
-              full
-              success
               style={styles.formButton}
+              full
               onPress={() => this._login()}
             >
               <View>
-                <Text>Entrar</Text>
+                <CText text="Entrar" />
               </View>
             </Button>
 
-            <Text style={styles.newUser}>
-              Não tem uma conta? Clique no botão abaixo para se registrar
-            </Text>
+            <CText
+              style={styles.newUser}
+              subsubtitle
+              text="Não tem uma conta? Clique no botão abaixo para se registrar"
+            />
 
             <Button
               full
-              onPress={() => goTo(this.navigation, "Register")}
+              style={{ backgroundColor: '#452103' }}
+              onPress={() => goTo(this.navigation, 'Register')}
             >
               <View>
-                <Text>Registrar</Text>
+                <CText text="Registrar" />
               </View>
             </Button>
 
@@ -116,19 +136,21 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: 'white',
   },
   welcomeText: {
     fontSize: 30,
     textAlign: 'center',
-    color: 'green',
+    color: '#db8000',
   },
   formButton: {
-    marginTop: 50
+    marginTop: 50,
+    backgroundColor: '#874000'
   },
   newUser: {
-    fontSize: 10,
-    color: '#567bb7',
+    fontSize: 12,
+    color: '#db8000',
     textAlign: 'center',
     marginTop: 50,
     marginBottom: 20,
