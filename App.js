@@ -1,159 +1,53 @@
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  View,
-  TouchableHighlight
-} from 'react-native';
-import { ZeroMQ } from 'react-native-zeromq';
-import { Container, Button, Text } from 'native-base';
-import RootStack from './navigation/Stack'
+import { YellowBox, StatusBar } from 'react-native';
+import { Root } from 'native-base';
+import { createRootNavigator } from './navigation/Stack'
+import { isSignedIn, getToken } from './utils/TokenUtils';
+import { dark } from './utils/Colors';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const warningsToIgnore = [
+  'Warning: componentWillReceiveProps is deprecated and will be removed in the next major version. Use static getDerivedStateFromProps instead.',
+  'Warning: componentWillMount is deprecated and will be removed in the next major version. Use componentDidMount instead. As a temporary workaround, you can rename to UNSAFE_componentWillMount.',
+  'Warning: componentWillUpdate is deprecated and will be removed in the next major version. Use componentDidUpdate instead. As a temporary workaround, you can rename to UNSAFE_componentWillUpdate.'
+]
+
+YellowBox.ignoreWarnings(warningsToIgnore);
 
 type Props = {};
 export default class App extends Component<Props> {
-   constructor() {
-    console.log('Initializing app...')
+  constructor(props) {
+    super(props);
 
-    super();
-
-    // change this ip to discovery
-    this.raspIp = "tcp://10.0.0.230:5566"
     this.state = {
-      socket: null,
-      loading: true,
-      logs: []
+      signedIn: false,
     }
-
-    console.log('Creating socket...')
-    this._createSocket()
-      .then((socket) => {
-        console.log('Socket created')
-        this.setState({ socket, loading: false })
-
-        this._connect(socket, this.raspIp)
-      })
-      .catch((error) => {
-        console.log('Error while creating socket', error)
-      })
   }
 
-  _createSocket() {
-    return new Promise((resolve, reject) => {
-      ZeroMQ.socket(ZeroMQ.SOCKET.TYPE.DEALER)
-        .then((socket) => {
-          resolve(socket)
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
-  }
-
-  _connect(socket, ip) {
-    console.log(`Connecting to ip ${ip}`)
-    socket.connect(ip)
-      .then(() => {
-        console.log(`Connected to ${ip}`)
-        this.setState({ connected: true })
-
-        let idx = 0
-
-        setInterval(() => {
-          this._receiveMessage(socket);
-        }, 1000)
-      })
-      .catch((error) => {
-        console.log(`Error while connecting to ${ip}`)
-      })
-  }
-
-  _sendMessage(socket, message) {
-    socket.send(message)
-      .then(() => {
-        console.log('Message sent!')
-      })
-      .catch((error) => {
-        console.log('Error while sending message', error)
-      })
-  }
-
-  _receiveMessage(socket) {
-    socket.recv()
-      .then((msg) => {
-        console.log(`Message received: ${msg}`)
-        this.setState({ logs: [...this.state.logs, msg]})
-      })
-      .catch((error) => {
-        console.log('Error while receiving message', error)
-      })
+  async componentDidMount() {
+    try {
+      let signed = await isSignedIn();
+      if (signed) {
+        let token = await getToken();
+        console.log('token', token);
+        this.setState({ signedIn: true })
+      } else {
+        console.log('not signed in')
+      }
+    } catch(error) {
+      console.log('error', error);
+    }
   }
 
   render() {
-    if (this.state.connected) {
-      if (this.state.loading) {
-        return (
-          <View style={styles.container}>
-            <Text>{this.state.loading ? "loading" : "not loading"}</Text>
-          </View>
-        )
-      } else {
-        // return (
-          // <Container>
-          //   <Button>
-          //     <Text>
-          //       Connected: true
-          //     </Text>
-          //   </Button>
+    const Layout = createRootNavigator(this.state.signedIn);
 
-          //   {
-          //     this.state.logs.map((log, idx) =>
-          //       <Button key={idx}>
-          //         <Text>{log}</Text>
-          //       </Button>
-          //     )
-          //   }
-
-          // </Container>
-        // )
-        return <RootStack />;
-      }
-    } else {
-      return (
-        <View style={styles.container}>
-          <Text style={styles.instructions}>
-            To get started, edit App.js
-          </Text>
-          <Text style={styles.instructions}>
-            {instructions}
-          </Text>
-        </View>
-      );
-    }
+    return (
+      <Root>
+        <StatusBar
+          backgroundColor={dark}
+        />
+        <Layout />
+      </Root>
+    )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});

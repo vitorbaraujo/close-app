@@ -65,6 +65,13 @@
 		<string>rubicon-icon-font.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
+		<string>OpenSans-Regular.ttf</string>
+		<string>Lato-Regular.ttf</string>
+		<string>Ubuntu-R.ttf</string>
+		<string>Lato-Bold.ttf</string>
+		<string>Lato-Italic.ttf</string>
+		<string>OpenSans-Bold.ttf</string>
+		<string>OpenSans-Italic.ttf</string>
 	</array>
 </dict>
 </plist>

@@ -1,41 +1,113 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
-  Container, Button, Text, Header,
-  Body, Left, Right, Icon,
-  Tabs, Tab
+  Container, Button, Header,
+  Body, Left, Icon,
+  Tabs, Tab, Content
 } from 'native-base';
+import moment from 'moment';
+import CText from '../commons/CText';
 import CycleHistory from './CycleHistory';
 import CycleStats from './CycleStats';
+import { get } from '../../utils/Api';
+import { goTo } from '../../utils/NavigationUtils';
+import { getDuration } from '../../utils/CycleUtils';
+import { formatted } from '../../utils/DateUtils';
+import { white, dark } from '../../utils/Colors'
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
     header: null
   }
 
-  _goTo(path) {
-    this.props.navigation.navigate(path)
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      cycle: this.props.cycle,
+      ongoing: this.props.ongoing || false,
+    }
+
+    this.navigation = props.navigation;
+  }
+
+  async componentDidMount() {
+    try {
+      if (this.state.ongoing) {
+        let intervalId = setInterval(async () => {
+          let logs = await get(`cycles/${this.state.cycle.id}/cycle_logs/`);
+          let lastLog = logs[0];
+
+          if (lastLog) {
+            if (this.state.cycle.logs.find(l => l.id === lastLog.id) === undefined) {
+              this.setState({
+                cycle: {
+                  ...this.state.cycle,
+                  logs: [lastLog, ...this.state.cycle.logs],
+                }
+              })
+            } else {
+              clearInterval(intervalId);
+            }
+          }
+        }, 3000)
+      }
+    } catch(error) {
+      console.log('[cycle] Error on logs get', error);
+    }
   }
 
   render() {
+    let { cycle } = this.props;
+
     return (
       <Container>
-        <View style={styles.container}>
+        <Header style={styles.header}>
+          <Left>
+            <Button
+              transparent
+              onPress={() => goTo(this.navigation, 'Homepage')}
+            >
+              <View>
+                <Icon name="arrow-back" />
+              </View>
+            </Button>
+          </Left>
+          <Body />
+        </Header>
+        <Content contentContainerStyle={{ flex: 1 }}>
           <View style={styles.main}>
-            <Header style={styles.header}>
-              <Left>
-                <Button
-                  transparent
-                  onPress={() => this._goTo('Homepage')}
-                >
-                  <Icon name="arrow-back" />
-                </Button>
-              </Left>
-              <Body />
-            </Header>
-            <Text>Cycle info</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+              <CText
+                text={cycle.beer_count}
+                style={{ color: white, fontSize: 60 }}
+                />
+              <CText
+                text={`garrafa${cycle.beer_count !== 1 ? 's' : ''} fechada${cycle.beer_count !== 1 ? 's' : ''} nesse ciclo`}
+                style={{ color: white }}
+                />
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View>
+                <CText
+                  text="Duração"
+                  style={{ color: white }}
+                  />
+                <CText
+                  text={getDuration(cycle)}
+                  style={{ color: white }}
+                />
+              </View>
+              <View>
+                <CText
+                  text={formatted(moment(cycle.start_time))}
+                  style={{ color: white }}
+                />
+              </View>
+            </View>
+
           </View>
-          <View style={styles.profileInfo}>
+          <View style={styles.tabs}>
             <Tabs
               initialPage={0}
             >
@@ -43,44 +115,52 @@ export default class Cycle extends React.Component {
                 heading="Estatísticas"
                 tabStyle={styles.tab}
                 activeTabStyle={styles.tab}
-                textStyle={{ color: 'white' }}
+                textStyle={styles.tabText}
+                activeTextStyle={styles.tabActiveText}
               >
-                <CycleStats />
+                <CycleStats cycle={cycle} />
               </Tab>
               <Tab
                 heading="Histórico"
                 tabStyle={styles.tab}
                 activeTabStyle={styles.tab}
-                textStyle={{ color: 'white' }}
+                textStyle={styles.tabText}
+                activeTextStyle={styles.tabActiveText}
               >
-                <CycleHistory />
+                <CycleHistory logs={cycle.logs} />
               </Tab>
             </Tabs>
           </View>
-        </View>
+        </Content>
       </Container>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
+  header: {
+    backgroundColor: dark,
+    elevation: 0
   },
   main: {
     flex: 1,
-    backgroundColor: '#eca72c'
+    backgroundColor: dark,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
-  header: {
-    backgroundColor: '#eca72c',
-    elevation: 0
-  },
-  profileInfo: {
+  tabs: {
     flex: 2,
+    backgroundColor: white,
   },
   tab: {
-    backgroundColor: '#eca72c'
+    backgroundColor: dark
+  },
+  tabText: {
+    color: white,
+    fontFamily: 'Lato-Regular'
+  },
+  tabActiveText: {
+    color: white,
+    fontFamily: 'Lato-Bold'
   }
 });
