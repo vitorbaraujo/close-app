@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import {
-  YellowBox,
-} from 'react-native';
+import { YellowBox, StatusBar } from 'react-native';
 import { Root } from 'native-base';
 import { createRootNavigator } from './navigation/Stack'
 import { isSignedIn, getToken } from './utils/TokenUtils';
+import { dark } from './utils/Colors';
 
 const warningsToIgnore = [
   'Warning: componentWillReceiveProps is deprecated and will be removed in the next major version. Use static getDerivedStateFromProps instead.',
@@ -44,6 +43,9 @@ export default class App extends Component<Props> {
 
     return (
       <Root>
+        <StatusBar
+          backgroundColor={dark}
+        />
         <Layout />
       </Root>
     )

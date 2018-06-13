@@ -44,13 +44,13 @@ export default class Homepage extends React.Component {
   async componentDidMount() {
     try {
       let user = await get('users/me/');
-      this.setState({ currentUser: user })
+      this.setState({ currentUser: user || {} })
 
       let cycles = await get('users/me/cycles/');
-      this.setState({ cycles });
+      this.setState({ cycles: cycles || {} });
 
       let beers = await get('users/me/beers/');
-      this.setState({ beers });
+      this.setState({ beers: beers || {} });
     } catch(error) {
       console.log('error on get', error);
     }
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   timeline: {
-    flex: 3,
+    flex: 2,
     backgroundColor: white,
     padding: 10,
     paddingBottom: 0,

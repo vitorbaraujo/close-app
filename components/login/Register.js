@@ -12,6 +12,7 @@ import {
   Label,
   Button,
   Icon,
+  Spinner,
 } from 'native-base'
 import { saveToken } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
@@ -91,7 +92,7 @@ export default class Register extends Component {
   }
 
   render() {
-    let { form, showPassword } = this.state
+    let { form, showPassword, loading } = this.state
 
     return (
       <Container>
@@ -127,8 +128,9 @@ export default class Register extends Component {
               style={styles.formButton}
               onPress={() => this._register()}
             >
-              <View>
-                <CText text={this.state.loading ? 'Registrando...' : 'Registrar' } />
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                <CText text={loading ? 'Registrando...' : 'Registrar'} />
+                {loading && <Spinner size="small" color={white} />}
               </View>
             </Button>
 

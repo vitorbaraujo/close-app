@@ -1,7 +1,7 @@
 import { getToken, saveToken } from './TokenUtils';
 
-// let uri = 'http://c12415e2.ngrok.io/'
-let uri = 'http://10.0.3.2:8000/'
+// let uri = 'https://3b72a532.ngrok.io/'
+let uri = 'http://10.0.0.224:8000/'
 
 let headers = {
   'Accept': "application/json",

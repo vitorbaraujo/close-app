@@ -35,7 +35,7 @@ export default class SendRasp extends React.Component {
       ssid: '',
       password: '',
       // ip: "tcp://192.168.4.1:5544",
-      ip: 'tcp://0.tcp.ngrok.io:19402',
+      ip: 'tcp://0.tcp.ngrok.io:16871',
       error: '',
       showPassword: false,
       connected: false,
@@ -54,13 +54,17 @@ export default class SendRasp extends React.Component {
   async _createSocket() {
     try {
       let socket = await ZeroMQ.socket(ZeroMQ.SOCKET.TYPE.DEALER)
-
       if (socket) {
         let response = await socket.connect(this.state.ip)
 
         if (response && response.success) {
-          this.setState({ connected: true, socket: socket });
+          this.setState({ connected: true, socket: socket, loading: false });
+        } else {
+          this.setState({ loading: false })
+          console.log('[sendRasp] problem when sending message', response)
         }
+      } else {
+        console.log('[sendRasp] socket was not created')
       }
     } catch (error) {
       console.log('error while creating socket');
@@ -86,6 +90,7 @@ export default class SendRasp extends React.Component {
 
     } else {
       console.log('not connected');
+      this.setState({ loading: false })
     }
 
     if (this.state.sent) {
@@ -118,8 +123,13 @@ export default class SendRasp extends React.Component {
         <Content padder contentContainerStyle={styles.content}>
           <View>
             <CText
-              text="Insira a nome e senha da rede wi-fi para sincronizar com a Raspberry PI da máquina"
+              text="Sincronize com a máquina"
               style={styles.welcomeText}
+            />
+
+            <CText
+              text="Insira o nome a senha da sua rede Wi-Fi"
+              style={{ color: light, textAlign: 'center' }}
             />
             <Form>
               {form.map((f, i) =>

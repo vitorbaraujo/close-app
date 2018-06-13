@@ -49,7 +49,7 @@ export default class Cycle extends React.Component {
         </Header>
         <Content contentContainerStyle={{ flex: 1 }}>
           <View style={styles.main}>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
               <CText
                 text={cycle.beer_count}
                 style={{ color: white, fontSize: 60 }}
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   tabs: {
-    flex: 3,
+    flex: 2,
     backgroundColor: white,
   },
   tab: {
