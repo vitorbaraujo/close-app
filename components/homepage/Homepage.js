@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import { Container, Text, Icon, Button, Header, Body, Left, Right, Title, Fab } from 'native-base';
 import { StackNavigator } from 'react-navigation';
+import { BeerChart } from '../charts/BeerChart';
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
@@ -11,7 +12,7 @@ export default class Homepage extends React.Component {
   _goTo(path) {
     this.props.navigation.navigate(path)
   }
-
+  
   render() {
     return (
       <Container>
@@ -36,6 +37,11 @@ export default class Homepage extends React.Component {
           </View>
           <View style={styles.timeline}>
             <Text>Timeline</Text>
+            <Button
+              onPress={() => this._goTo('BeerChart')}
+            >
+              <Text> VAI PRO GRAFICO </Text>
+            </Button>
             <Fab
               style={styles.addCycleButton}
               onPress={() => this._goTo('Cycle')}
