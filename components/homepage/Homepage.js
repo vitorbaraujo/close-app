@@ -1,32 +1,23 @@
 import React from 'react';
-import { StyleSheet, View, TouchableHighlight, FlatList } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import {
   Container,
-  Text,
   Icon,
   Button,
   Header,
   Body,
   Left,
   Right,
-  Title,
-  Fab,
-  ListItem,
-  Form,
-  Item,
-  Label,
-  Input,
   Card,
   CardItem,
   Content,
 } from 'native-base';
-import { StackNavigator } from 'react-navigation';
-import { getToken } from '../../utils/TokenUtils';
+import moment from 'moment';
+import CText from '../commons/CText';
 import { goTo } from '../../utils/NavigationUtils';
 import { get } from '../../utils/Api';
-import moment from 'moment';
-import TimeAgo from 'javascript-time-ago';
-import pt from 'javascript-time-ago/locale/pt'
+import { getDuration } from '../../utils/CycleUtils';
+import { humanize, formatted } from '../../utils/DateUtils';
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
@@ -47,8 +38,6 @@ export default class Homepage extends React.Component {
     }
 
     this.navigation = props.navigation;
-    TimeAgo.locale(pt);
-    this.timeAgo = new TimeAgo('pt-BR')
   }
 
   async componentDidMount() {
@@ -64,26 +53,6 @@ export default class Homepage extends React.Component {
     } catch(error) {
       console.log('error on get', error);
     }
-  }
-
-  _getDuration = ({ start_time, end_time }) => {
-    let start = moment(start_time);
-    let end = moment(end_time);
-    let diff = end.diff(start, 'minutes');
-    let hours = Math.floor(diff / 60);
-    let minutes = diff % 60;
-    let hourString = hours > 0 ? `${hours} hora${hours !== 1 ? 's' : ''}` : '';
-    let minuteString = minutes > 0 ? `${minutes} minuto${minutes !== 1 ? 's' : ''}` : '';
-    let result = ''
-    if (hourString && minuteString) {
-      result = `${hourString} e ${minuteString} de duração`
-    } else if (hourString) {
-      result = `${hourString} de duração`
-    } else if (minuteString) {
-      result = `${minuteString} de duração`
-    }
-
-    return result;
   }
 
   _keyExtractor = (item) => item.id.toString();
@@ -105,7 +74,10 @@ export default class Homepage extends React.Component {
           onPress={() => goTo(this.navigation, 'Cycle', { cycle })}
         >
           <Body>
-            <Text style={{ fontWeight: 'normal' }}>{cycle.beer.name}</Text>
+            <CText
+              text={cycle.beer.name}
+              style={{ fontFamily: 'Lato-Regular' }}
+            />
           </Body>
         </CardItem>
         <CardItem
@@ -114,12 +86,21 @@ export default class Homepage extends React.Component {
           onPress={() => goTo(this.navigation, 'Cycle', { cycle })}
         >
           <Body>
-            <Text style={{ fontSize: 12, color: 'grey' }}>{this._getDuration(cycle)}</Text>
-            <Text style={{ fontWeight: 'normal' }}>{cycle.beer_count} garrafa{cycle.beer_count == 1 ? '' : 's'}</Text>
+            <CText
+              text={`${getDuration(cycle)}${getDuration(cycle) ? ' de duração' : ''}`}
+              style={{ fontSize: 12, color: 'grey' }}
+            />
+            <CText
+              text={`${cycle.beer_count} garrafa${cycle.beer_count == 1 ? '' : 's'}`}
+              style={{ fontWeight: 'normal' }}
+            />
           </Body>
           <Right>
-            <Text>{moment(cycle.start_time).format('DD/MM/YY')}</Text>
-            <Text style={{ fontSize: 10, color: 'grey' }}>{this.timeAgo.format(moment(cycle.start_time).toDate())}</Text>
+            <CText text={formatted(moment(cycle.start_time))} />
+            <CText
+              text={humanize(moment(cycle.start_time).toDate())}
+              style={{ fontSize: 10, color: 'grey' }}
+            />
           </Right>
         </CardItem>
       </Card>
@@ -144,7 +125,7 @@ export default class Homepage extends React.Component {
                 onPress={() => goTo(this.navigation, 'Profile', { user: currentUser })}
               >
                 <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-                  <Text style={styles.profileText} uppercase={false}>{currentUser.first_name} {currentUser.last_name}</Text>
+                  <CText bold text={`${currentUser.first_name} ${currentUser.last_name}`} />
                   <Icon style={styles.profileIcon} type="FontAwesome" name="user" />
                 </View>
               </Button>

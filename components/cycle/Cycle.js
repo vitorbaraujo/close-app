@@ -1,21 +1,14 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
-  Container, Button, Text, Header,
-  Body, Left, Right, Icon,
-  Tabs, Tab
+  Container, Button, Header,
+  Body, Left, Icon,
+  Tabs, Tab, TabHeading
 } from 'native-base';
 import CycleHistory from './CycleHistory';
 import CycleStats from './CycleStats';
 import { goTo } from '../../utils/NavigationUtils';
-
-const defaultCycle = {
-  "beer": 'Default beer',
-  "start_time": 'oi oi',
-  "end_time": 'oi oi',
-  "beer_count": 0,
-  "logs": []
-}
+import CText from '../commons/CText';
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -52,7 +45,7 @@ export default class Cycle extends React.Component {
               </Left>
               <Body />
             </Header>
-            <Text>{cycle.beer.name}</Text>
+            <CText text={cycle.beer.name} />
           </View>
           <View style={styles.profileInfo}>
             <Tabs
@@ -62,17 +55,19 @@ export default class Cycle extends React.Component {
                 heading="Estatísticas"
                 tabStyle={styles.tab}
                 activeTabStyle={styles.tab}
-                textStyle={{ color: 'white' }}
+                textStyle={styles.tabText}
+                activeTextStyle={styles.tabActiveText}
               >
-                <CycleStats />
+                <CycleStats cycle={cycle} />
               </Tab>
               <Tab
                 heading="Histórico"
                 tabStyle={styles.tab}
                 activeTabStyle={styles.tab}
-                textStyle={{ color: 'white' }}
+                textStyle={styles.tabText}
+                activeTextStyle={styles.tabActiveText}
               >
-                <CycleHistory />
+                <CycleHistory cycle={cycle} />
               </Tab>
             </Tabs>
           </View>
@@ -101,5 +96,13 @@ const styles = StyleSheet.create({
   },
   tab: {
     backgroundColor: '#eca72c'
+  },
+  tabText: {
+    color: 'white',
+    fontFamily: 'Lato-Regular'
+  },
+  tabActiveText: {
+    color: 'white',
+    fontFamily: 'Lato-Bold'
   }
 });
