@@ -133,7 +133,7 @@ export default class SendRasp extends React.Component {
                   {f.field === 'password' &&
                     <Icon
                       type="Entypo"
-                      name='eye-with-line'
+                      name={!showPassword ? 'eye' : 'eye-with-line'}
                       onPress={() => this.setState({ showPassword: !this.state.showPassword })}
                       style={{ color: grey }}
                     />
