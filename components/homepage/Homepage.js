@@ -18,6 +18,7 @@ import { goTo } from '../../utils/NavigationUtils';
 import { get } from '../../utils/Api';
 import { getDuration } from '../../utils/CycleUtils';
 import { humanize, formatted } from '../../utils/DateUtils';
+import { dark, light, white } from '../../utils/Colors'
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
@@ -143,7 +144,7 @@ export default class Homepage extends React.Component {
                 (
                   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <CText
-                      style={{ color: '#221e22', fontSize: 25, textAlign: 'center' }}
+                      style={{ color: light, fontSize: 25, textAlign: 'center' }}
                       text="Você ainda não tem ciclos de produção"
                     />
                   </View>
@@ -158,14 +159,14 @@ export default class Homepage extends React.Component {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#eca72c'
+    backgroundColor: dark
   },
   content: {
     flex: 1,
   },
   main: {
     flex: 1,
-    backgroundColor: '#eca72c'
+    backgroundColor: dark
   },
   profile: {
     flexDirection: 'row',
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
   },
   timeline: {
     flex: 3,
-    backgroundColor: '#fff',
+    backgroundColor: white,
     padding: 10,
     paddingBottom: 0,
   },

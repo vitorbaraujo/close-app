@@ -17,6 +17,7 @@ import { saveToken } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
 import { register, login } from '../../utils/Api';
 import CText from '../commons/CText';
+import { light, lighter, red, grey, medium, white } from '../../utils/Colors'
 
 export default class Register extends Component {
   static navigationOptions = {
@@ -114,7 +115,7 @@ export default class Register extends Component {
                       type="Entypo"
                       name='eye-with-line'
                       onPress={() => this.setState({ showPassword: !this.state.showPassword })}
-                      style={{ color: 'grey' }}
+                      style={{ color: grey }}
                     />
                   }
                 </Item>
@@ -138,7 +139,7 @@ export default class Register extends Component {
             />
 
             <Button
-              style={{ backgroundColor: '#874000' }}
+              style={{ backgroundColor: light }}
               full
               onPress={() => goTo(this.navigation, "Login")}
             >
@@ -148,7 +149,7 @@ export default class Register extends Component {
             </Button>
 
             <CText
-              style={{ color: 'red', alignSelf: 'center' }}
+              style={{ color: red, alignSelf: 'center' }}
               text={this.state.error}
             />
           </View>
@@ -166,23 +167,23 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: white,
   },
   welcomeText: {
     fontSize: 30,
     textAlign: 'center',
-    color: '#db8000',
+    color: lighter,
   },
   font: {
     fontFamily: 'Lato-Regular'
   },
   formButton: {
     marginTop: 50,
-    backgroundColor: '#452103'
+    backgroundColor: medium
   },
   alreadyRegistered: {
     fontSize: 12,
-    color: '#db8000',
+    color: lighter,
     textAlign: 'center',
     marginTop: 50,
     marginBottom: 20,

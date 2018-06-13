@@ -12,6 +12,7 @@ import CycleStats from './CycleStats';
 import { goTo } from '../../utils/NavigationUtils';
 import { getDuration } from '../../utils/CycleUtils';
 import { formatted } from '../../utils/DateUtils';
+import { white, dark } from '../../utils/Colors'
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -51,28 +52,28 @@ export default class Cycle extends React.Component {
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <CText
                 text={cycle.beer_count}
-                style={{ color: 'white', fontSize: 60 }}
+                style={{ color: white, fontSize: 60 }}
                 />
               <CText
                 text={`garrafa${cycle.beer_count !== 1 ? 's' : ''} fechada${cycle.beer_count !== 1 ? 's' : ''} nesse ciclo`}
-                style={{ color: 'white' }}
+                style={{ color: white }}
                 />
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <View>
                 <CText
                   text="Duração"
-                  style={{ color: 'white' }}
+                  style={{ color: white }}
                   />
                 <CText
                   text={getDuration(cycle)}
-                  style={{ color: 'white' }}
+                  style={{ color: white }}
                 />
               </View>
               <View>
                 <CText
                   text={formatted(moment(cycle.start_time))}
-                  style={{ color: 'white' }}
+                  style={{ color: white }}
                 />
               </View>
             </View>
@@ -110,28 +111,28 @@ export default class Cycle extends React.Component {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#eca72c',
+    backgroundColor: dark,
     elevation: 0
   },
   main: {
     flex: 1,
-    backgroundColor: '#eca72c',
+    backgroundColor: dark,
     paddingLeft: 20,
     paddingRight: 20,
   },
   tabs: {
     flex: 3,
-    backgroundColor: '#fff',
+    backgroundColor: white,
   },
   tab: {
-    backgroundColor: '#eca72c'
+    backgroundColor: dark
   },
   tabText: {
-    color: 'white',
+    color: white,
     fontFamily: 'Lato-Regular'
   },
   tabActiveText: {
-    color: 'white',
+    color: white,
     fontFamily: 'Lato-Bold'
   }
 });

@@ -3,14 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import {
   Container,
   Button,
-  Text,
   Header,
-  Body,
   Left,
   Right,
   Icon,
-  Title,
-  Form,
   Item,
   Content,
   Input,
@@ -21,6 +17,7 @@ import { removeToken } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
 import CText from '../commons/CText';
 import gravatar from 'gravatar';
+import { white, dark, orange } from '../../utils/Colors';
 
 export default class Profile extends React.Component {
   static navigationOptions = {
@@ -34,6 +31,12 @@ export default class Profile extends React.Component {
       user: props.user,
       avatar: null,
       editing: false,
+      form: [
+        { label: 'Nome', field: 'first_name' },
+        { label: 'Sobrenome', field: 'last_name' },
+        { label: 'Nome de usuário', field: 'username' },
+        { label: 'E-mail', field: 'email' },
+      ],
     }
 
     this.navigation = props.navigation;
@@ -62,8 +65,12 @@ export default class Profile extends React.Component {
     }
   }
 
+  _updateText = (label, text) => {
+    this.setState({ [label]: text })
+  }
+
   render() {
-    let { user, editing } = this.state;
+    let { user, editing, avatar, form } = this.state;
 
     return (
       <Container>
@@ -79,63 +86,48 @@ export default class Profile extends React.Component {
           <Right>
             <Button
               transparent
-              onPress={() => this._doLogout()}
+              onPress={() => goTo(this.navigation, 'SendRasp')}
             >
-              <Text>Sair</Text>
+              <Icon
+                type="FontAwesome"
+                name="gear"
+                style={{ color: white }}
+              />
             </Button>
           </Right>
         </Header>
-        <Content contentContainerStyle={{ flex: 1 }}>
+        <Content contentContainerStyle={{ flex: 1, backgroundColor: white }}>
           <View style={styles.main}>
             <Thumbnail
-              source={{ uri: this.state.avatar }}
+              source={{ uri: avatar }}
               style={{ height: 120, width: 120}}
             />
             <CText
               bold
               text={`${user.first_name} ${user.last_name}`}
-              style={{ color: 'white', fontSize: 20 }}
+              style={{ color: white, fontSize: 20 }}
             />
           </View>
           <View style={styles.profileInfo}>
-            <Item stackedLabel disabled>
-              <Label>Nome</Label>
-              <Input disabled={!editing} value={user.first_name} />
-            </Item>
-            <Item stackedLabel disabled>
-              <Label>Sobrenome</Label>
-              <Input disabled={!editing} value={user.last_name} />
-            </Item>
-            <Item stackedLabel disabled>
-              <Label>Nome de usuário</Label>
-              <Input disabled={!editing} value={user.username} />
-            </Item>
-            <Item stackedLabel disabled>
-              <Label>E-mail</Label>
-              <Input disabled={!editing} value={user.email} />
-            </Item>
+            {form.map((f, i) =>
+              <Item key={i} stackedLabel disabled={!editing}>
+                <Label style={styles.font}>{f.label}</Label>
+                <Input
+                  style={styles.font}
+                  disabled={!editing}
+                  value={user[f.field]}
+                />
+              </Item>
+            )}
           </View>
-          {/* <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 20 }}>
-            {
-              !editing ?
-                (<Button
-                  style={{ backgroundColor: '#ee5622' }}
-                  onPress={() => this.setState({ editing: true })}
-                  >
-                  <View>
-                    <Text>Editar</Text>
-                  </View>
-                </Button>) :
-                (<Button
-                  style={{ backgroundColor: '#ee5622' }}
-                  onPress={() => this.setState({ editing: false })}
-                >
-                  <View>
-                    <Text>Salvar</Text>
-                  </View>
-                </Button>)
-            }
-          </View> */}
+          <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 20 }}>
+            <Button
+              style={{ backgroundColor: orange }}
+              onPress={() => this._doLogout()}
+            >
+              <CText text="SAIR" />
+            </Button>
+          </View>
         </Content>
       </Container>
     )
@@ -145,16 +137,19 @@ export default class Profile extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: white,
     justifyContent: 'center',
   },
   header: {
-    backgroundColor: '#eca72c',
+    backgroundColor: dark,
     elevation: 0
+  },
+  font: {
+    fontFamily: 'Lato-Regular'
   },
   main: {
     flex: 1,
-    backgroundColor: '#eca72c',
+    backgroundColor: dark,
     paddingLeft: 10,
     paddingRight: 10,
     alignItems: 'center',

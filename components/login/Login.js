@@ -17,6 +17,7 @@ import {
 import { goTo } from '../../utils/NavigationUtils';
 import { login } from '../../utils/Api';
 import CText from '../commons/CText';
+import { light, lighter, red, grey, medium, white } from '../../utils/Colors'
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -86,7 +87,7 @@ export default class Cycle extends React.Component {
                       type="Entypo"
                       name='eye-with-line'
                       onPress={() => this.setState({ showPassword: !this.state.showPassword })}
-                      style={{ color: 'grey' }}
+                      style={{ color: grey }}
                     />
                   }
                 </Item>
@@ -111,7 +112,7 @@ export default class Cycle extends React.Component {
 
             <Button
               full
-              style={{ backgroundColor: '#452103' }}
+              style={{ backgroundColor: medium }}
               onPress={() => goTo(this.navigation, 'Register')}
             >
               <View>
@@ -119,7 +120,7 @@ export default class Cycle extends React.Component {
               </View>
             </Button>
 
-            <Text style={{ color: 'red', alignSelf: 'center' }}>
+            <Text style={{ color: red, alignSelf: 'center' }}>
               {this.state.error}
             </Text>
           </View>
@@ -137,20 +138,23 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: white,
+  },
+  font: {
+    fontFamily: 'Lato-Regular'
   },
   welcomeText: {
     fontSize: 30,
     textAlign: 'center',
-    color: '#db8000',
+    color: lighter,
   },
   formButton: {
     marginTop: 50,
-    backgroundColor: '#874000'
+    backgroundColor: light
   },
   newUser: {
     fontSize: 12,
-    color: '#db8000',
+    color: lighter,
     textAlign: 'center',
     marginTop: 50,
     marginBottom: 20,

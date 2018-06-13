@@ -19,6 +19,8 @@ import {
 } from 'native-base';
 import { ZeroMQ } from 'react-native-zeromq';
 import { goTo } from '../utils/NavigationUtils';
+import CText from './commons/CText';
+import { light, lighter, dark, red, grey } from '../utils/Colors'
 
 export default class SendRasp extends React.Component {
   static navigationOptions = {
@@ -37,6 +39,10 @@ export default class SendRasp extends React.Component {
       connected: false,
       socket: null,
       sent: false,
+      form: [
+        { label: 'Nome da rede', field: 'ssid' },
+        { label: 'Senha', field: 'password' },
+      ]
     }
 
     this.navigation = props.navigation;
@@ -82,6 +88,7 @@ export default class SendRasp extends React.Component {
       this.state.socket.close();
       this.setState({ connected: false, socket: null, sent: false, });
 
+      // TODO fix this
       goTo(this.navigation, 'Cycle', {
         cycle: {
           "beer": 'ALAA',
@@ -94,43 +101,64 @@ export default class SendRasp extends React.Component {
     }
   }
 
+  _updateText = (label, text) => {
+    this.setState({ [label]: text })
+  }
+
   render() {
+    let { form, showPassword } = this.state
+
     return (
       <Container style={styles.container}>
+        <Header style={styles.header}>
+          <Left>
+            <Button
+              transparent
+              onPress={() => goTo(this.navigation, 'Profile')}
+            >
+              <Icon name="arrow-back" />
+            </Button>
+          </Left>
+          <Body />
+        </Header>
         <Content padder contentContainerStyle={styles.content}>
           <View>
-            <Text style={styles.welcomeText}>Insira a nome e senha da rede wi-fi para sincronizar com a Raspberry PI da máquina</Text>
+            <CText
+              text="Insira a nome e senha da rede wi-fi para sincronizar com a Raspberry PI da máquina"
+              style={styles.welcomeText}
+            />
             <Form>
-              <Item floatingLabel>
-                <Label>Nome de usuário</Label>
-                <Input onChangeText={(text) => this.setState({ ssid: text })} />
-              </Item>
-              <Item floatingLabel last>
-                <Label>Senha</Label>
-                <Input
-                  secureTextEntry={!this.state.showPassword}
-                  onChangeText={(text) => this.setState({ password: text })}
+              {form.map((f, i) =>
+                <Item key={i} floatingLabel>
+                  <Label style={styles.font}>{f.label}</Label>
+                  <Input
+                    style={styles.font}
+                    secureTextEntry={f.field === 'password' && !showPassword}
+                    onChangeText={(text) => this._updateText(f.field, text)}
                   />
-                <Icon
-                  type="Entypo"
-                  name='eye-with-line'
-                  onPress={() => this.setState({ showPassword: !this.state.showPassword })}
-                />
-              </Item>
+                  {f.field === 'password' &&
+                    <Icon
+                      type="Entypo"
+                      name='eye-with-line'
+                      onPress={() => this.setState({ showPassword: !this.state.showPassword })}
+                      style={{ color: grey }}
+                    />
+                  }
+                </Item>
+              )}
             </Form>
 
             <Button
               full
-              success
               style={styles.formButton}
               onPress={() => this._sendInfo()}
             >
               <View>
-                <Text>Enviar</Text>
+                <CText text="Enviar" />
               </View>
             </Button>
 
-            <Text style={{ color: 'red', alignSelf: 'center' }}>
+            <Text style={{ color: red, alignSelf: 'center' }}>
               {this.state.error}
             </Text>
           </View>
@@ -145,23 +173,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center'
   },
+  font: {
+    fontFamily: 'Lato-Regular'
+  },
+  header: {
+    backgroundColor: dark,
+    elevation: 0
+  },
   content: {
     flex: 1,
     justifyContent: 'center'
   },
   welcomeText: {
-    fontSize: 20,
+    fontSize: 30,
     textAlign: 'center',
-    color: 'green',
+    color: lighter,
   },
   formButton: {
-    marginTop: 50
-  },
-  newUser: {
-    fontSize: 10,
-    color: '#567bb7',
-    textAlign: 'center',
     marginTop: 50,
-    marginBottom: 20,
+    backgroundColor: light
   }
 })
