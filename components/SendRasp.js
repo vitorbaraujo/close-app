@@ -16,11 +16,12 @@ import {
   Left,
   Icon,
   Body,
+  Spinner,
 } from 'native-base';
 import { ZeroMQ } from 'react-native-zeromq';
 import { goTo } from '../utils/NavigationUtils';
 import CText from './commons/CText';
-import { light, lighter, dark, red, grey } from '../utils/Colors'
+import { light, lighter, dark, red, grey, white } from '../utils/Colors'
 
 export default class SendRasp extends React.Component {
   static navigationOptions = {
@@ -33,12 +34,14 @@ export default class SendRasp extends React.Component {
     this.state = {
       ssid: '',
       password: '',
-      ip: "tcp://192.168.4.1:5544",
+      // ip: "tcp://192.168.4.1:5544",
+      ip: 'tcp://0.tcp.ngrok.io:19402',
       error: '',
       showPassword: false,
       connected: false,
       socket: null,
       sent: false,
+      loading: false,
       form: [
         { label: 'Nome da rede', field: 'ssid' },
         { label: 'Senha', field: 'password' },
@@ -65,6 +68,7 @@ export default class SendRasp extends React.Component {
   }
 
   async _sendInfo() {
+    this.setState({ loading: true })
     await this._createSocket();
 
     if (this.state.connected) {
@@ -86,18 +90,8 @@ export default class SendRasp extends React.Component {
 
     if (this.state.sent) {
       this.state.socket.close();
-      this.setState({ connected: false, socket: null, sent: false, });
-
-      // TODO fix this
-      goTo(this.navigation, 'Cycle', {
-        cycle: {
-          "beer": 'ALAA',
-          "start_time": "2018-05-29T01:05:47.751081Z",
-          "end_time": "2018-05-29T01:05:40.579459Z",
-          "beer_count": 0,
-          "logs": []
-        }
-      });
+      this.setState({ connected: false, socket: null, sent: false, loading: false});
+      goTo(this.navigation, 'Homepage');
     }
   }
 
@@ -106,7 +100,7 @@ export default class SendRasp extends React.Component {
   }
 
   render() {
-    let { form, showPassword } = this.state
+    let { form, showPassword, loading } = this.state
 
     return (
       <Container style={styles.container}>
@@ -153,8 +147,9 @@ export default class SendRasp extends React.Component {
               style={styles.formButton}
               onPress={() => this._sendInfo()}
             >
-              <View>
-                <CText text="Enviar" />
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                <CText text={loading ? 'Enviando...' : 'Enviar'} />
+                { loading && <Spinner size="small" color={white}/>}
               </View>
             </Button>
 
