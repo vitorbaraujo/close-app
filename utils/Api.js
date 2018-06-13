@@ -26,7 +26,7 @@ export async function register(obj) {
     if (response.status >= 200 && response.status < 300) {
       return true;
     } else {
-      console.log('[register] bad response status');
+      console.log('[register] bad response status', response);
     }
   } catch(error) {
     console.log('[register] error registering');

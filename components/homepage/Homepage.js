@@ -18,7 +18,7 @@ import { goTo } from '../../utils/NavigationUtils';
 import { get } from '../../utils/Api';
 import { getDuration } from '../../utils/CycleUtils';
 import { humanize, formatted } from '../../utils/DateUtils';
-import { dark, light, white } from '../../utils/Colors'
+import { dark, light, white, green } from '../../utils/Colors'
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
@@ -35,6 +35,7 @@ export default class Homepage extends React.Component {
       networkSsid: '',
       networkPass: '',
       cycles: [],
+      lastCycle: null,
       beers: [],
     }
 
@@ -51,8 +52,17 @@ export default class Homepage extends React.Component {
 
       let beers = await get('users/me/beers/');
       this.setState({ beers: beers || {} });
+
+      let intervalId = setInterval(async () => {
+        let last = await get('users/me/last_cycle/');
+
+        if (last && last.end_time === null) {
+          this.setState({ lastCycle: last });
+          clearInterval(intervalId);
+        }
+      }, 3000)
     } catch(error) {
-      console.log('error on get', error);
+      console.log('[homepage] error on some get', error);
     }
   }
 
@@ -105,10 +115,26 @@ export default class Homepage extends React.Component {
   }
 
   render() {
-    let { currentUser, cycles } = this.state;
+    let { currentUser, cycles, lastCycle } = this.state;
 
     return (
       <Container>
+        {
+          lastCycle &&
+          <Button
+            style={{ backgroundColor: green }}
+            onPress={() => goTo(this.navigation, 'Cycle', { cycle: lastCycle, ongoing: true })}
+          >
+            <CText
+              text="Um ciclo está em andamento"
+              style={{ color: white, flex: 1 }}
+            />
+            <Icon
+              style={{ color: white }}
+              name="arrow-forward"
+            />
+          </Button>
+        }
         <Header
           noShadow={true}
           style={styles.header}

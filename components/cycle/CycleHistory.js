@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Container, List, Card, CardItem, Body, Right } from 'native-base';
+import { FlatList } from 'react-native';
+import { Container, Card, CardItem, Body, Right } from 'native-base';
 import { getLog } from '../../utils/Logs';
 import moment from 'moment';
 import CText from '../commons/CText';
@@ -11,37 +11,36 @@ export default class CycleHistory extends React.Component {
     header: null
   }
 
-  constructor(props) {
-    super(props);
+  _keyExtractor = (item, index) => index.toString();
 
-    this.state = {
-      cycle: props.cycle,
-    }
+  _renderItem = ({ item }) => {
+    return (
+      <Card>
+        <CardItem>
+          <Body>
+            <CText text={getLog(item.code)} />
+          </Body>
+          <Right>
+            <CText
+              text={formattedHour(moment(item.ocurred_at))}
+              style={{ fontSize: 12 }}
+            />
+          </Right>
+        </CardItem>
+      </Card>
+    )
   }
 
   render() {
-    let { cycle: { logs } } = this.state;
+    let { logs } = this.props;
+
     return (
       <Container style={{ padding: 10 }}>
-          <List
-            dataArray={logs.sort((a, b) => b.id - a.id)}
-            renderRow={(item) =>
-              <Card>
-                <CardItem>
-                  <Body>
-                    <CText text={getLog(item.code)} />
-                  </Body>
-                  <Right>
-                    <CText
-                      text={formattedHour(moment(item.ocurred_at))}
-                      style={{ fontSize: 12 }}
-                    />
-                  </Right>
-                </CardItem>
-              </Card>
-            }
-          >
-          </List>
+        <FlatList
+          data={logs}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._renderItem}
+        />
       </Container>
     )
   }

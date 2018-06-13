@@ -9,6 +9,7 @@ import moment from 'moment';
 import CText from '../commons/CText';
 import CycleHistory from './CycleHistory';
 import CycleStats from './CycleStats';
+import { get } from '../../utils/Api';
 import { goTo } from '../../utils/NavigationUtils';
 import { getDuration } from '../../utils/CycleUtils';
 import { formatted } from '../../utils/DateUtils';
@@ -23,14 +24,41 @@ export default class Cycle extends React.Component {
     super(props);
 
     this.state = {
-      cycle: this.props.cycle || defaultCycle,
+      cycle: this.props.cycle,
+      ongoing: this.props.ongoing || false,
     }
 
     this.navigation = props.navigation;
   }
 
+  async componentDidMount() {
+    try {
+      if (this.state.ongoing) {
+        let intervalId = setInterval(async () => {
+          let logs = await get(`cycles/${this.state.cycle.id}/cycle_logs/`);
+          let lastLog = logs[0];
+
+          if (lastLog) {
+            if (this.state.cycle.logs.find(l => l.id === lastLog.id) === undefined) {
+              this.setState({
+                cycle: {
+                  ...this.state.cycle,
+                  logs: [lastLog, ...this.state.cycle.logs],
+                }
+              })
+            } else {
+              clearInterval(intervalId);
+            }
+          }
+        }, 3000)
+      }
+    } catch(error) {
+      console.log('[cycle] Error on logs get', error);
+    }
+  }
+
   render() {
-    let { cycle } = this.state;
+    let { cycle } = this.props;
 
     return (
       <Container>
@@ -99,7 +127,7 @@ export default class Cycle extends React.Component {
                 textStyle={styles.tabText}
                 activeTextStyle={styles.tabActiveText}
               >
-                <CycleHistory cycle={cycle} />
+                <CycleHistory logs={cycle.logs} />
               </Tab>
             </Tabs>
           </View>
