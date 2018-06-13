@@ -8,7 +8,7 @@ export function getDuration({ start_time, end_time }) {
   let minutes = diff % 60;
   let hourString = hours > 0 ? `${hours} hora${hours !== 1 ? 's' : ''}` : '';
   let minuteString = minutes > 0 ? `${minutes} minuto${minutes !== 1 ? 's' : ''}` : '';
-  let result = ''
+  let result = '0 minutos'
   if (hourString && minuteString) {
     result = `${hourString} e ${minuteString}`
   } else if (hourString) {

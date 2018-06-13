@@ -3,12 +3,15 @@ import { StyleSheet, View } from 'react-native';
 import {
   Container, Button, Header,
   Body, Left, Icon,
-  Tabs, Tab, TabHeading
+  Tabs, Tab
 } from 'native-base';
+import moment from 'moment';
+import CText from '../commons/CText';
 import CycleHistory from './CycleHistory';
 import CycleStats from './CycleStats';
 import { goTo } from '../../utils/NavigationUtils';
-import CText from '../commons/CText';
+import { getDuration } from '../../utils/CycleUtils';
+import { formatted } from '../../utils/DateUtils';
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -45,7 +48,13 @@ export default class Cycle extends React.Component {
               </Left>
               <Body />
             </Header>
-            <CText text={cycle.beer.name} />
+            <CText text={cycle.beer_count} />
+            <CText
+              text={`garrafa${cycle.beer_count !== 1 ? 's' : ''} fechada${cycle.beer_count !== 1 ? 's' : ''} nesse ciclo`}
+            />
+            <CText text={formatted(moment(cycle.start_time))} />
+            <CText text="Duração" />
+            <CText text={getDuration(cycle)} />
           </View>
           <View style={styles.profileInfo}>
             <Tabs

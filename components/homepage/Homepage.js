@@ -74,10 +74,7 @@ export default class Homepage extends React.Component {
           onPress={() => goTo(this.navigation, 'Cycle', { cycle })}
         >
           <Body>
-            <CText
-              text={cycle.beer.name}
-              style={{ fontFamily: 'Lato-Regular' }}
-            />
+            <CText text={cycle.beer.name} />
           </Body>
         </CardItem>
         <CardItem
@@ -87,19 +84,18 @@ export default class Homepage extends React.Component {
         >
           <Body>
             <CText
+              subtitle
               text={`${getDuration(cycle)}${getDuration(cycle) ? ' de duração' : ''}`}
-              style={{ fontSize: 12, color: 'grey' }}
             />
             <CText
               text={`${cycle.beer_count} garrafa${cycle.beer_count == 1 ? '' : 's'}`}
-              style={{ fontWeight: 'normal' }}
             />
           </Body>
           <Right>
             <CText text={formatted(moment(cycle.start_time))} />
             <CText
+              subsubtitle
               text={humanize(moment(cycle.start_time).toDate())}
-              style={{ fontSize: 10, color: 'grey' }}
             />
           </Right>
         </CardItem>
@@ -112,69 +108,63 @@ export default class Homepage extends React.Component {
 
     return (
       <Container>
-        <View style={styles.container}>
-          <Header
-            noShadow={true}
-            style={styles.header}
-          >
-            <Left />
-            <Body />
-            <Right>
-              <Button
-                transparent
-                onPress={() => goTo(this.navigation, 'Profile', { user: currentUser })}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-                  <CText bold text={`${currentUser.first_name} ${currentUser.last_name}`} />
-                  <Icon style={styles.profileIcon} type="FontAwesome" name="user" />
-                </View>
-              </Button>
-            </Right>
-          </Header>
-          <Content contentContainerStyle={{ flex: 1 }}>
-            <View style={{ flex: 1, backgroundColor: '#eca72c' }}>
-            </View>
-            <View style={styles.timeline}>
-              <FlatList
-                data={this.state.cycles}
-                extraData={this.state}
-                keyExtractor={this._keyExtractor}
-                renderItem={this._renderItem}
-              />
-            </View>
-          </Content>
-        </View>
+        <Header
+          noShadow={true}
+          style={styles.header}
+        >
+          <Left />
+          <Body />
+          <Right>
+            <Button
+              transparent
+              onPress={() => goTo(this.navigation, 'Profile', { user: currentUser })}
+            >
+              <View style={styles.profile}>
+                <CText bold text={`${currentUser.first_name} ${currentUser.last_name}`} />
+                <Icon style={styles.profileIcon} type="FontAwesome" name="user" />
+              </View>
+            </Button>
+          </Right>
+        </Header>
+        <Content contentContainerStyle={styles.content}>
+          <View style={styles.main}>
+          </View>
+          <View style={styles.timeline}>
+            <FlatList
+              data={this.state.cycles}
+              extraData={this.state}
+              keyExtractor={this._keyExtractor}
+              renderItem={this._renderItem}
+            />
+          </View>
+        </Content>
       </Container>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  header: {
+    backgroundColor: '#eca72c'
+  },
+  content: {
     flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
   },
   main: {
     flex: 1,
     backgroundColor: '#eca72c'
   },
-  header: {
-    backgroundColor: '#eca72c'
-  },
-  profileContainer: {
+  profile: {
     flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profileText: {
-    color: 'white',
-    fontWeight: 'bold',
+    alignItems: 'flex-end',
   },
   profileIcon: {
     color: 'white',
+    marginLeft: 10,
   },
   timeline: {
     flex: 3,
+    backgroundColor: '#fff',
     padding: 10,
     paddingBottom: 0,
   },
