@@ -14,11 +14,12 @@ import {
 } from 'native-base';
 import moment from 'moment';
 import CText from '../commons/CText';
+import CycleChart from '../charts/CycleChart';
 import { goTo } from '../../utils/NavigationUtils';
 import { get } from '../../utils/Api';
 import { getDuration } from '../../utils/CycleUtils';
 import { humanize, formatted } from '../../utils/DateUtils';
-import { dark, light, white, green } from '../../utils/Colors'
+import { dark, light, white, green } from '../../utils/Colors';
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
@@ -154,8 +155,22 @@ export default class Homepage extends React.Component {
           </Right>
         </Header>
         <Content contentContainerStyle={styles.content}>
-          <View style={styles.main}>
-          </View>
+          {
+             cycles.length ?
+             (
+              <View style={styles.main}>
+                <CycleChart data={cycles} />
+              </View>
+             ) :
+             (
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <CText
+                  style={{ color: light, fontSize: 25, textAlign: 'center' }}
+                  text="Você ainda não tem ciclos de produção"
+                />
+              </View>
+             )
+          }
           <View style={styles.timeline}>
             {
              cycles.length ?
@@ -192,7 +207,9 @@ const styles = StyleSheet.create({
   },
   main: {
     flex: 1,
-    backgroundColor: dark
+    backgroundColor: dark,
+    justifyContent: 'center', 
+    alignItems: 'center',
   },
   profile: {
     flexDirection: 'row',
