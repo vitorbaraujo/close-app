@@ -1,5 +1,6 @@
 export function getLog(code) {
   switch(code) {
+    case 0: return 'Código 0';
     case 1: return 'Código 1';
     case 2: return 'Código 2';
     case 3: return 'Código 3';
