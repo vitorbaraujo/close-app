@@ -11,6 +11,7 @@ import {
   Card,
   CardItem,
   Content,
+  Spinner,
 } from 'native-base';
 import moment from 'moment';
 import CText from '../commons/CText';
@@ -19,7 +20,7 @@ import { goTo } from '../../utils/NavigationUtils';
 import { get } from '../../utils/Api';
 import { getDuration } from '../../utils/CycleUtils';
 import { humanize, formatted } from '../../utils/DateUtils';
-import { dark, light, white, green } from '../../utils/Colors';
+import { dark, light, white, green, lighter, medium } from '../../utils/Colors';
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
@@ -38,6 +39,7 @@ export default class Homepage extends React.Component {
       cycles: [],
       lastCycle: null,
       beers: [],
+      loading: true,
     }
 
     this.navigation = props.navigation;
@@ -62,6 +64,8 @@ export default class Homepage extends React.Component {
           clearInterval(intervalId);
         }
       }, 3000)
+
+      this.setState({ loading: false })
     } catch(error) {
       console.log('[homepage] error on some get', error);
     }
@@ -116,10 +120,21 @@ export default class Homepage extends React.Component {
   }
 
   render() {
-    let { currentUser, cycles, lastCycle } = this.state;
+    let { currentUser, cycles, lastCycle, loading } = this.state;
+    console.log('cycles', cycles);
+
+    if (loading) {
+      return (
+        <Container style={{ backgroundColor: dark }}>
+          <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Spinner color={lighter} size="large" />
+          </Content>
+        </Container>
+      )
+    }
 
     return (
-      <Container>
+      <Container style={{ backgroundColor: dark }}>
         {
           lastCycle &&
           <Button
@@ -154,23 +169,11 @@ export default class Homepage extends React.Component {
             </Button>
           </Right>
         </Header>
-        <Content contentContainerStyle={styles.content}>
-          {
-             cycles.length ?
-             (
-              <View style={styles.main}>
-                <CycleChart data={cycles} />
-              </View>
-             ) :
-             (
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <CText
-                  style={{ color: light, fontSize: 25, textAlign: 'center' }}
-                  text="Você ainda não tem ciclos de produção"
-                />
-              </View>
-             )
-          }
+        <Content padder contentContainerStyle={styles.content}>
+          <CText text="Garrafas fechadas por ciclo" style={{ color: 'white' }} />
+
+          <CycleChart data={cycles} />
+
           <View style={styles.timeline}>
             {
              cycles.length ?
@@ -203,13 +206,12 @@ const styles = StyleSheet.create({
     backgroundColor: dark
   },
   content: {
-    flex: 1,
+    // flex: 1,
   },
   main: {
     flex: 1,
     backgroundColor: dark,
-    justifyContent: 'center', 
-    alignItems: 'center',
+    justifyContent: 'center',
   },
   profile: {
     flexDirection: 'row',
@@ -220,9 +222,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   timeline: {
-    flex: 2,
-    backgroundColor: white,
-    padding: 10,
-    paddingBottom: 0,
+    flex: 3,
+    backgroundColor: dark,
+    // padding: 10,
+    // paddingBottom: 0,
   },
 });

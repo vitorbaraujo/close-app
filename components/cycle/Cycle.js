@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: white,
   },
   tab: {
-    backgroundColor: dark
+    backgroundColor: dark,
   },
   tabText: {
     color: white,

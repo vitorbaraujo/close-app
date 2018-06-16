@@ -1,7 +1,7 @@
 import { getToken, saveToken } from './TokenUtils';
 
-// let uri = 'https://3b72a532.ngrok.io/'
-let uri = 'http://10.0.0.224:8000/'
+// let uri = 'http://10.0.0.224:8000/'
+let uri = 'https://closeapi.herokuapp.com/'
 
 let headers = {
   'Accept': "application/json",

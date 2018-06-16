@@ -1,32 +1,30 @@
-import React from 'react';
-import { VictoryLine, VictoryChart, VictoryTheme } from "victory-native";
+import React, { Component } from 'react';
+import { StyleSheet } from 'react-native'
+import { View } from 'native-base'
+import CloseBarChart from './CloseBarChart'
+import { white } from '../../utils/Colors'
 
-export default class CycleChart extends React.Component {
-    
+export default class CycleChart extends Component {
     constructor(props) {
         super(props);
     }
-    
+
     render() {
         let { data } = this.props
-        let data1 = data.map(cycle => ({ x: data.indexOf(cycle)+1, y: cycle.beer }))
-        console.log(data1)
+        let parsedData = data.sort((a, b) => b.id - a.id).map((cycle, index) => ({ x: index + 1, y: cycle.beer_count }))
+
         return (
-            <VictoryChart
-                height={230}
-                width={300}
-                >
-                    <VictoryLine
-                        style={{
-                        data: { stroke: "#a00" },
-                        parent: { border: "1px solid #ccc"}
-                        }}
-                        data={data1}
-                        
-                    />
-            </VictoryChart>
+            <View style={styles.container}>
+                <CloseBarChart data={parsedData} />
+            </View>
         )
     }
-
-
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    }
+});

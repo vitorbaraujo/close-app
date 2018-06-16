@@ -34,8 +34,8 @@ export default class SendRasp extends React.Component {
     this.state = {
       ssid: '',
       password: '',
-      // ip: "tcp://192.168.4.1:5544",
-      ip: 'tcp://0.tcp.ngrok.io:16871',
+      ip: "tcp://192.168.4.1:5544",
+      // ip: 'tcp://0.tcp.ngrok.io:16871',
       error: '',
       showPassword: false,
       connected: false,
