@@ -9,6 +9,7 @@ import Cycle from '../components/cycle/Cycle'
 import Login from '../components/login/Login'
 import Register from '../components/login/Register'
 import SendRasp from '../components/SendRasp'
+import Config from '../components/Config'
 
 const mapNavigationStateParamsToProps = (SomeComponent) => {
   return class extends React.Component {
@@ -48,6 +49,9 @@ export const SignedIn = createStackNavigator(
     Cycle: {
       screen: mapNavigationStateParamsToProps(Cycle),
     },
+    Config: {
+      screen: mapNavigationStateParamsToProps(Config),
+    }
   },
   {
     initialRouteName: 'Homepage',

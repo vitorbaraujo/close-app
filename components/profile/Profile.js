@@ -86,7 +86,7 @@ export default class Profile extends React.Component {
           <Right>
             <Button
               transparent
-              onPress={() => goTo(this.navigation, 'SendRasp')}
+              onPress={() => goTo(this.navigation, 'Config')}
             >
               <Icon
                 type="FontAwesome"

@@ -129,17 +129,6 @@ export default class SendRasp extends React.Component {
 
     return (
       <Container style={styles.container}>
-        <Header style={styles.header}>
-          <Left>
-            <Button
-              transparent
-              onPress={() => goTo(this.navigation, 'Profile')}
-            >
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body />
-        </Header>
         <Content padder contentContainerStyle={styles.content}>
           <View>
             <CText
