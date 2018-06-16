@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Container, Text } from 'native-base';
+import { Container, Content } from 'native-base';
 import PieCycleChart from '../charts/PieCycleChart';
 
 export default class CycleStats extends React.Component {
@@ -11,7 +10,9 @@ export default class CycleStats extends React.Component {
   render() {
     return (
       <Container>
-        <PieCycleChart data={this.props.cycle}/>
+        <Content>
+          <PieCycleChart data={this.props.cycle}/>
+        </Content>
       </Container>
     )
   }

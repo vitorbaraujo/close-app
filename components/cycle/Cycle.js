@@ -112,6 +112,15 @@ export default class Cycle extends React.Component {
               initialPage={0}
             >
               <Tab
+                heading="Histórico"
+                tabStyle={styles.tab}
+                activeTabStyle={styles.tab}
+                textStyle={styles.tabText}
+                activeTextStyle={styles.tabActiveText}
+                >
+                <CycleHistory logs={cycle.logs} />
+              </Tab>
+              <Tab
                 heading="Estatísticas"
                 tabStyle={styles.tab}
                 activeTabStyle={styles.tab}
@@ -119,15 +128,6 @@ export default class Cycle extends React.Component {
                 activeTextStyle={styles.tabActiveText}
               >
                 <CycleStats cycle={cycle} />
-              </Tab>
-              <Tab
-                heading="Histórico"
-                tabStyle={styles.tab}
-                activeTabStyle={styles.tab}
-                textStyle={styles.tabText}
-                activeTextStyle={styles.tabActiveText}
-              >
-                <CycleHistory logs={cycle.logs} />
               </Tab>
             </Tabs>
           </View>
