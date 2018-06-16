@@ -20,6 +20,7 @@ import {
 } from 'native-base';
 import { ZeroMQ } from 'react-native-zeromq';
 import { goTo } from '../utils/NavigationUtils';
+import { saveItem, getItem, removeItem, isSignedIn } from '../utils/TokenUtils';
 import CText from './commons/CText';
 import { light, lighter, dark, red, grey, white } from '../utils/Colors'
 
@@ -32,10 +33,11 @@ export default class SendRasp extends React.Component {
     super(props);
 
     this.state = {
-      ssid: '',
-      password: '',
       ip: "tcp://192.168.4.1:5544",
-      // ip: 'tcp://0.tcp.ngrok.io:16871',
+      ssid: '',
+      ssidPassword: '',
+      username: '',
+      password: '',
       error: '',
       showPassword: false,
       connected: false,
@@ -44,6 +46,8 @@ export default class SendRasp extends React.Component {
       loading: false,
       form: [
         { label: 'Nome da rede', field: 'ssid' },
+        { label: 'Senha da rede', field: 'ssidPassword' },
+        { label: 'Nome de usuário', field: 'username' },
         { label: 'Senha', field: 'password' },
       ]
     }
@@ -55,7 +59,10 @@ export default class SendRasp extends React.Component {
     try {
       let socket = await ZeroMQ.socket(ZeroMQ.SOCKET.TYPE.DEALER)
       if (socket) {
+        console.log('socket', socket);
         let response = await socket.connect(this.state.ip)
+
+        console.log('response', response);
 
         if (response && response.success) {
           this.setState({ connected: true, socket: socket, loading: false });
@@ -72,20 +79,29 @@ export default class SendRasp extends React.Component {
   }
 
   async _sendInfo() {
+    let message = JSON.stringify({
+      ssid: this.state.ssid,
+      ssid_password: this.state.ssidPassword,
+      username: this.state.username,
+      password: this.state.password,
+    })
+
     this.setState({ loading: true })
     await this._createSocket();
 
     if (this.state.connected) {
-      let message = `${this.state.ssid}$${this.state.password}`;
-
       try {
         let response = await this.state.socket.send(message);
 
         if (response) {
+          let shit = await saveItem('rasp_sent', 'true');
+
           this.setState({ sent: true });
+        } else {
+          console.log('no response')
         }
       } catch(error) {
-        console.log('error while sending network info');
+        console.log('error while sending network info', error);
       }
 
     } else {
@@ -94,9 +110,13 @@ export default class SendRasp extends React.Component {
     }
 
     if (this.state.sent) {
-      this.state.socket.close();
-      this.setState({ connected: false, socket: null, sent: false, loading: false});
-      goTo(this.navigation, 'Homepage');
+      let signed = await isSignedIn();
+
+      if (signed) {
+        goTo(this.navigation, 'SignedIn')
+      } else {
+        goTo(this.navigation, 'SignedOut')
+      }
     }
   }
 
@@ -140,7 +160,7 @@ export default class SendRasp extends React.Component {
                     secureTextEntry={f.field === 'password' && !showPassword}
                     onChangeText={(text) => this._updateText(f.field, text)}
                   />
-                  {f.field === 'password' &&
+                  {(f.field === 'password' || f.field === 'ssidPassword') &&
                     <Icon
                       type="Entypo"
                       name={!showPassword ? 'eye' : 'eye-with-line'}

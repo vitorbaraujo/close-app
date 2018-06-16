@@ -16,8 +16,8 @@ import {
 import moment from 'moment';
 import CText from '../commons/CText';
 import CycleChart from '../charts/CycleChart';
-import { goTo } from '../../utils/NavigationUtils';
 import { get } from '../../utils/Api';
+import { goTo } from '../../utils/NavigationUtils';
 import { getDuration } from '../../utils/CycleUtils';
 import { humanize, formatted } from '../../utils/DateUtils';
 import { dark, light, white, green, lighter, medium } from '../../utils/Colors';

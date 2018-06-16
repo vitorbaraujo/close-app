@@ -54,7 +54,18 @@ export const SignedIn = createStackNavigator(
   }
 );
 
-export const createRootNavigator = (signedIn = false) => {
+export const Rasp = createStackNavigator(
+  {
+    SendRasp: {
+      screen: mapNavigationStateParamsToProps(SendRasp),
+    },
+  },
+  {
+    initialRouteName: 'SendRasp',
+  }
+);
+
+export const createRootNavigator = (raspSent = false, signedIn = false) => {
   return createSwitchNavigator(
     {
       SignedIn: {
@@ -62,10 +73,13 @@ export const createRootNavigator = (signedIn = false) => {
       },
       SignedOut: {
         screen: SignedOut
+      },
+      Rasp: {
+        screen: Rasp,
       }
     },
     {
-      initialRouteName: signedIn ? 'SignedIn' : 'SignedOut'
+      initialRouteName: !raspSent ? 'Rasp' : (signedIn ? 'SignedIn' : 'SignedOut')
     }
   );
 };

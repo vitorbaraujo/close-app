@@ -37,3 +37,30 @@ export async function isSignedIn() {
     console.log('[isSignedIn] error while check signed', error);
   }
 }
+
+export async function getItem(key) {
+  try {
+    let response = await AsyncStorage.getItem(key);
+    return response;
+  } catch (error) {
+    console.log('[getItem] error getting', key, error);
+  }
+}
+
+export async function saveItem(key, value) {
+  try {
+    let response = await AsyncStorage.setItem(key, value);
+    return response;
+  } catch (error) {
+    console.log('[saveItem] error saving', key, value, error);
+  }
+}
+
+export async function removeItem(key) {
+  try {
+    let response = await AsyncStorage.removeItem(key);
+    return response;
+  } catch (error) {
+    console.log('[removeToken] error removing token', error);
+  }
+}
