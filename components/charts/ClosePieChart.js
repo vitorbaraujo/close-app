@@ -7,7 +7,7 @@ export default class ClosePieChart extends React.Component {
   render() {
     let { data, legendData } = this.props;
     const colors = ["tomato", "orange", "gold", "cyan", "navy", "red", "blue", "brown" ]
-    
+
     return (
       <View pointerEvents="none">
         <VictoryPie
@@ -25,7 +25,7 @@ export default class ClosePieChart extends React.Component {
                 <Badge style={{ height: 15, width: 15, backgroundColor: colors[i] }} />
                 <CText
                   subtitle
-                  text={`${d.code} (${d.x})`}
+                  text={`${d.code} (${d.y})`}
                   style={{ marginLeft: 5 }}
                 />
               </View>

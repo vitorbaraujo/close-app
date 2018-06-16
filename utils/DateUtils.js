@@ -13,5 +13,5 @@ export function formatted(date) {
 }
 
 export function formattedHour(date) {
-  return date.format('hh:mm:ss')
+  return date.format('HH:mm:ss')
 }

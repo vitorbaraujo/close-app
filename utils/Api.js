@@ -1,6 +1,6 @@
 import { getToken, saveToken } from './TokenUtils';
 
-// let uri = 'http://10.0.0.224:8000/'
+// let uri = 'http://10.0.0.218:8000/'
 let uri = 'https://closeapi.herokuapp.com/'
 
 let headers = {

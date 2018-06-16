@@ -69,6 +69,12 @@ export default class Profile extends React.Component {
     this.setState({ [label]: text })
   }
 
+  _go(path) {
+    console.log('path shit')
+    this.forceUpdate();
+    // goTo(this.navigation, path)
+  }
+
   render() {
     let { user, editing, avatar, form } = this.state;
 
@@ -78,7 +84,7 @@ export default class Profile extends React.Component {
           <Left>
             <Button
               transparent
-              onPress={() => goTo(this.navigation, 'Homepage')}
+              onPress={() => this._go('Homepage')}
             >
               <Icon name="arrow-back" />
             </Button>
