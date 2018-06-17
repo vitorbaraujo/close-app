@@ -72,13 +72,20 @@ export default class CycleHistory extends React.Component {
 
     return (
       <Container style={{ padding: 10 }}>
-        {/* <PTRView onRefresh={this._refresh}> */}
-          <FlatList
-            data={logs}
-            keyExtractor={this._keyExtractor}
-            renderItem={this._renderItem}
+        {
+          logs.length ?
+          (
+            <FlatList
+              data={logs}
+              keyExtractor={this._keyExtractor}
+              renderItem={this._renderItem}
+            />
+          ) :
+          <CText
+            text="Ainda não há eventos para este ciclo"
+            style={{ textAlign: 'center' }}
           />
-        {/* </PTRView> */}
+        }
       </Container>
     )
   }
