@@ -129,7 +129,7 @@ export default class Cycle extends React.Component {
               initialPage={0}
             >
               <Tab
-                heading="Histórico"
+                heading="Eventos"
                 tabStyle={styles.tab}
                 activeTabStyle={styles.tab}
                 textStyle={styles.tabText}

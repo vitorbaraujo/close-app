@@ -181,33 +181,34 @@ export default class Homepage extends React.Component {
               </Button>
             </Right>
           </Header>
-          <Content padder contentContainerStyle={styles.content}>
-            <CText text="Garrafas fechadas por ciclo" style={{ color: 'white' }} />
 
-            <CycleChart data={cycles} />
-
-            <View style={styles.timeline}>
-              {
+            {
               cycles.length ?
-                  (
+              (
+                <Content padder contentContainerStyle={styles.content}>
+                  <CText text="Garrafas fechadas por ciclo" style={{ color: 'white' }} />
+                  <CycleChart data={cycles} />
+                  <CText text="Últimos ciclos" style={{ color: 'white', marginBottom: 20 }} />
+                  <View style={{ flex: 1 }}>
                     <FlatList
                       data={cycles}
                       extraData={this.state}
                       keyExtractor={this._keyExtractor}
                       renderItem={this._renderItem}
                     />
-                  ) :
-                  (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                      <CText
-                        style={{ color: light, fontSize: 25, textAlign: 'center' }}
-                        text="Você ainda não tem ciclos de produção"
-                      />
-                    </View>
-                  )
-              }
-            </View>
-          </Content>
+                  </View>
+                </Content>
+              )
+              :
+              (
+                <Content padder contentContainerStyle={styles.content}>
+                  <CText
+                    style={{ color: light, fontSize: 25, textAlign: 'center' }}
+                    text="Você ainda não tem ciclos de produção"
+                  />
+                </Content>
+              )
+            }
         {/* </PTRView> */}
       </Container>
     )
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     backgroundColor: dark
   },
   content: {
-    // flex: 1,
+    backgroundColor: dark,
   },
   main: {
     flex: 1,
@@ -233,11 +234,5 @@ const styles = StyleSheet.create({
   profileIcon: {
     color: 'white',
     marginLeft: 10,
-  },
-  timeline: {
-    flex: 3,
-    backgroundColor: dark,
-    // padding: 10,
-    // paddingBottom: 0,
   },
 });
