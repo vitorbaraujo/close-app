@@ -10,6 +10,7 @@ import Login from '../components/login/Login'
 import Register from '../components/login/Register'
 import SendRasp from '../components/SendRasp'
 import Config from '../components/Config'
+import NewBeer from '../components/beers/NewBeer'
 
 const mapNavigationStateParamsToProps = (SomeComponent) => {
   return class extends React.Component {
@@ -51,6 +52,9 @@ export const SignedIn = createStackNavigator(
     },
     Config: {
       screen: mapNavigationStateParamsToProps(Config),
+    },
+    NewBeer: {
+      screen: mapNavigationStateParamsToProps(NewBeer),
     }
   },
   {

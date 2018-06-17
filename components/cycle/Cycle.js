@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import {
   Container, Button, Header,
   Body, Left, Icon,
-  Tabs, Tab, Content
+  Tabs, Tab, Content, Right
 } from 'native-base';
 import moment from 'moment';
 import CText from '../commons/CText';
@@ -91,6 +91,16 @@ export default class Cycle extends React.Component {
             </Button>
           </Left>
           <Body />
+          <Right>
+            <Button
+              transparent
+              onPress={() => goTo(this.navigation, 'NewBeer', { cycleId: cycle.id })}
+            >
+              <View>
+                <Icon type="FontAwesome" name="pencil" />
+              </View>
+            </Button>
+          </Right>
         </Header>
         <Content contentContainerStyle={{ flex: 1 }}>
           <View style={styles.main}>

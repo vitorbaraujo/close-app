@@ -1,6 +1,6 @@
 import { getToken, saveToken } from './TokenUtils';
 
-// let uri = 'http://10.0.0.218:8000/'
+// let uri = 'http://192.168.15.5:8000/'
 let uri = 'https://closeapi.herokuapp.com/'
 
 let headers = {
@@ -55,30 +55,31 @@ export async function login(obj) {
   }
 }
 
-export async function get(path) {
+export async function get(path, method = 'get', obj = null) {
   try {
     let token = await getToken();
 
     if (token) {
       let url = uri + path;
       let payload = {
-        method: 'get',
+        method: method,
         headers: new Headers({
           'Authorization': `JWT ${token}`,
           ...headers,
         }),
+        body: obj ? JSON.stringify(obj) : null,
       }
       let response = await fetch(url, payload)
 
       if (response.status >= 200 && response.status < 300) {
         return await response.json()
       } else {
-        console.log('[get] bad response status', response)
+        console.log(`[${method}] bad response status`, response)
       }
     } else {
-      console.log('[get] no token');
+      console.log(`[${method}] no token`);
     }
   } catch (error) {
-    console.log('[get] error while performing', error);
+    console.log(`[${ method }] error while performing`, error);
   }
 }

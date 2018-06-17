@@ -114,7 +114,7 @@ export default class Homepage extends React.Component {
           onPress={() => goTo(this.navigation, 'Cycle', { cycle })}
         >
           <Body>
-            <CText text={cycle.beer.name} />
+            <CText text={`${cycle.beer.name} (${cycle.beer.type_name})`} />
           </Body>
         </CardItem>
         <CardItem
@@ -199,7 +199,7 @@ export default class Homepage extends React.Component {
               (
                 <Content padder contentContainerStyle={styles.content}>
                   <CText text="Garrafas fechadas por ciclo" style={{ color: 'white' }} />
-                  <CycleChart data={cycles} />
+                  <CycleChart data={[...cycles]} />
                   <CText text="Últimos ciclos" style={{ color: 'white', marginBottom: 20 }} />
                   <View style={{ flex: 1 }}>
                     <FlatList
