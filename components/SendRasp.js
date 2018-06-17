@@ -39,16 +39,17 @@ export default class SendRasp extends React.Component {
       username: '',
       password: '',
       error: '',
+      showSsidPassword: false,
       showPassword: false,
       connected: false,
       socket: null,
       sent: false,
       loading: false,
       form: [
-        { label: 'Nome da rede', field: 'ssid' },
-        { label: 'Senha da rede', field: 'ssidPassword' },
-        { label: 'Nome de usuário', field: 'username' },
-        { label: 'Senha', field: 'password' },
+        { label: 'Nome da rede', field: 'ssid', password: false },
+        { label: 'Senha da rede', field: 'ssidPassword', password: true, passField: 'showSsidPassword' },
+        { label: 'Nome de usuário', field: 'username', password: false },
+        { label: 'Senha', field: 'password', password: true, passField: 'showPassword' },
       ]
     }
 
@@ -94,8 +95,7 @@ export default class SendRasp extends React.Component {
         let response = await this.state.socket.send(message);
 
         if (response) {
-          let shit = await saveItem('rasp_sent', 'true');
-
+          await saveItem('rasp_sent', 'true');
           this.setState({ sent: true });
         } else {
           console.log('no response')
@@ -120,12 +120,26 @@ export default class SendRasp extends React.Component {
     }
   }
 
+  async _skip() {
+    try {
+      let signed = await isSignedIn();
+
+      if (signed) {
+        goTo(this.navigation, 'SignedIn')
+      } else {
+        goTo(this.navigation, 'SignedOut')
+      }
+    } catch(error) {
+      console.log('error on skip', error)
+    }
+  }
+
   _updateText = (label, text) => {
     this.setState({ [label]: text })
   }
 
   render() {
-    let { form, showPassword, loading } = this.state
+    let { form, loading } = this.state
 
     return (
       <Container style={styles.container}>
@@ -146,14 +160,14 @@ export default class SendRasp extends React.Component {
                   <Label style={styles.font}>{f.label}</Label>
                   <Input
                     style={styles.font}
-                    secureTextEntry={f.field === 'password' && !showPassword}
+                    secureTextEntry={f.password && !this.state[f.passField]}
                     onChangeText={(text) => this._updateText(f.field, text)}
                   />
-                  {(f.field === 'password' || f.field === 'ssidPassword') &&
+                  {f.password &&
                     <Icon
                       type="Entypo"
-                      name={!showPassword ? 'eye' : 'eye-with-line'}
-                      onPress={() => this.setState({ showPassword: !this.state.showPassword })}
+                      name={!this.state[f.passField] ? 'eye' : 'eye-with-line'}
+                      onPress={() => this.setState({ [f.passField]: !this.state[f.passField] })}
                       style={{ color: grey }}
                     />
                   }
@@ -170,6 +184,19 @@ export default class SendRasp extends React.Component {
                 <CText text={loading ? 'Enviando...' : 'Enviar'} />
                 { loading && <Spinner size="small" color={white}/>}
               </View>
+            </Button>
+
+            <Button
+              transparent
+              full
+              style={{ marginTop: 25 }}
+              onPress={() => this._skip()}
+            >
+              <CText
+                bold
+                text="PULAR"
+                style={{ color: grey }}
+              />
             </Button>
 
             <Text style={{ color: red, alignSelf: 'center' }}>
