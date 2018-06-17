@@ -73,7 +73,7 @@ export async function get(path) {
       if (response.status >= 200 && response.status < 300) {
         return await response.json()
       } else {
-        console.log('[get] bad response status')
+        console.log('[get] bad response status', response)
       }
     } else {
       console.log('[get] no token');

@@ -78,6 +78,9 @@ export default class Profile extends React.Component {
   render() {
     let { user, editing, avatar, form } = this.state;
 
+    let firstName = user.first_name || '';
+    let lastName = user.last_name || '';
+
     return (
       <Container>
         <Header style={styles.header}>
@@ -110,7 +113,7 @@ export default class Profile extends React.Component {
             />
             <CText
               bold
-              text={`${user.first_name} ${user.last_name}`}
+              text={`${firstName} ${lastName}`}
               style={{ color: white, fontSize: 20 }}
             />
           </View>

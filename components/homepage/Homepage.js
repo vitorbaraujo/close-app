@@ -14,7 +14,7 @@ import {
   Spinner,
 } from 'native-base';
 import moment from 'moment';
-// import PTRView from 'react-native-pull-to-refresh';
+import PTRView from 'react-native-pull-to-refresh';
 import CText from '../commons/CText';
 import CycleChart from '../charts/CycleChart';
 import { get } from '../../utils/Api';
@@ -49,6 +49,22 @@ export default class Homepage extends React.Component {
   }
 
   async componentDidMount() {
+    try {
+      await this._fetchData();
+    } catch(error) {
+      console.log('error on fetch data');
+    }
+  }
+
+  _refresh = () => {
+    return new Promise(async (resolve) => {
+      console.log('heelo there', this.state)
+      await this._fetchData();
+      setTimeout(() => { resolve() }, 1000)
+    });
+  }
+
+  async _fetchData() {
     this.setState({ lastCycle: null });
 
     try {
@@ -76,16 +92,13 @@ export default class Homepage extends React.Component {
     }
   }
 
-  // _refresh() {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => { resolve() }, 1000)
-  //   });
-  // }
-
   _keyExtractor = (item) => item.id.toString();
 
   _renderItem = ({ item }) => {
-    const beer = this.state.beers.find(b => b.id === item.beer) || {};
+    let beer = {};
+    if (this.state && this.state.beers) {
+      beer = this.state.beers.find(b => b.id === item.beer) || {};
+    }
     let cycle = item || {};
 
     cycle = {
@@ -132,7 +145,6 @@ export default class Homepage extends React.Component {
 
   render() {
     let { currentUser, cycles, lastCycle, loading } = this.state;
-    console.log('cycles', cycles);
 
     if (loading) {
       return (
@@ -146,7 +158,7 @@ export default class Homepage extends React.Component {
 
     return (
       <Container style={{ backgroundColor: dark }}>
-        {/* <PTRView onRefresh={this._refresh}> */}
+        <PTRView onRefresh={this._refresh}>
           {
             lastCycle &&
             <Button
@@ -209,7 +221,7 @@ export default class Homepage extends React.Component {
                 </Content>
               )
             }
-        {/* </PTRView> */}
+        </PTRView>
       </Container>
     )
   }
