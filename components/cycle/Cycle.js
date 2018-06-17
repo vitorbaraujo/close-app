@@ -135,7 +135,7 @@ export default class Cycle extends React.Component {
                 textStyle={styles.tabText}
                 activeTextStyle={styles.tabActiveText}
                 >
-                <CycleHistory logs={cycle.logs} />
+                <CycleHistory logs={cycle.logs} cycleId={cycle.id} />
               </Tab>
               <Tab
                 heading="Estatísticas"

@@ -2,7 +2,9 @@ import React from 'react';
 import { FlatList } from 'react-native';
 import { Container, Card, CardItem, Body, Right } from 'native-base';
 import { getLog } from '../../utils/Logs';
+// import { get } from '../../utils/Api';
 import moment from 'moment';
+// import PTRView from 'react-native-pull-to-refresh';
 import CText from '../commons/CText';
 import { formattedHour } from '../../utils/DateUtils';
 
@@ -10,6 +12,40 @@ export default class CycleHistory extends React.Component {
   static navigationOptions = {
     header: null
   }
+
+  // constructor(props) {
+  //   super(props)
+
+  //   this.state = {
+  //     logs: [],
+  //   }
+  // }
+
+  // async componentDidMount() {
+  //   try {
+  //     console.log('did mount/')
+  //     await this.fetchData();
+  //   } catch (error) {
+  //     console.log('error on fetch data');
+  //   }
+  // }
+
+  // _refresh = () => {
+  //   return new Promise(async (resolve) => {
+  //     await this.fetchData();
+  //     setTimeout(() => (resolve()), 1000)
+  //   })
+  // }
+
+  // async fetchData() {
+  //   try {
+  //     let { cycleId } = this.props;
+  //     let logs = await get(`cycles/${cycleId}/cycle_logs/`)
+  //     console.log('logs', logs);
+  //   } catch(error) {
+  //     console.log('error fetch data')
+  //   }
+  // }
 
   _keyExtractor = (item, index) => index.toString();
 
@@ -33,15 +69,16 @@ export default class CycleHistory extends React.Component {
 
   render() {
     let { logs } = this.props;
-    console.log('hist logs', logs);
 
     return (
       <Container style={{ padding: 10 }}>
-        <FlatList
-          data={logs}
-          keyExtractor={this._keyExtractor}
-          renderItem={this._renderItem}
-        />
+        {/* <PTRView onRefresh={this._refresh}> */}
+          <FlatList
+            data={logs}
+            keyExtractor={this._keyExtractor}
+            renderItem={this._renderItem}
+          />
+        {/* </PTRView> */}
       </Container>
     )
   }
