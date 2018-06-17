@@ -33,32 +33,49 @@ export default class Cycle extends React.Component {
 
   async componentDidMount() {
     try {
-      if (this.state.ongoing) {
-        let intervalId = setInterval(async () => {
-          let logs = await get(`cycles/${this.state.cycle.id}/cycle_logs/`);
-          let lastLog = logs[0];
+      let intervalId = setInterval(async () => {
+        let cycle = await get(`cycles/${this.state.cycle.id}/`);
+        let logs = await get(`cycles/${this.state.cycle.id}/cycle_logs/`);
 
-          if (lastLog) {
-            if (this.state.cycle.logs.find(l => l.id === lastLog.id) === undefined) {
-              this.setState({
-                cycle: {
-                  ...this.state.cycle,
-                  logs: [lastLog, ...this.state.cycle.logs],
-                }
-              })
-            } else {
-              clearInterval(intervalId);
-            }
-          }
-        }, 3000)
-      }
+        curLogs = {}
+
+        this.state.cycle.logs.forEach(l => curLogs[l.id] = l)
+        logs.forEach(l => curLogs[l.id] = l)
+
+        let parsedLogs = Object.values(curLogs).sort((a, b) => b.id - a.id)
+
+        console.log('parsed logs', parsedLogs);
+
+        this.setState({
+          cycle: {
+            ...cycle,
+            logs: parsedLogs,
+          },
+        })
+
+        if (this.state.cycle.end_time !== null) {
+          clearInterval(intervalId);
+        }
+      }, 3000)
     } catch(error) {
       console.log('[cycle] Error on logs get', error);
     }
   }
 
+  _getDuration(cycle) {
+    if (cycle.end_time === null) {
+      let o = {
+        start_time: cycle.start_time,
+        end_time: new Date(),
+      };
+      return getDuration(o);
+    }
+
+    return getDuration(cycle);
+  }
+
   render() {
-    let { cycle } = this.props;
+    let { cycle } = this.state;
 
     return (
       <Container>
@@ -94,7 +111,7 @@ export default class Cycle extends React.Component {
                   style={{ color: white }}
                   />
                 <CText
-                  text={getDuration(cycle)}
+                  text={this._getDuration(cycle)}
                   style={{ color: white }}
                 />
               </View>
@@ -112,6 +129,15 @@ export default class Cycle extends React.Component {
               initialPage={0}
             >
               <Tab
+                heading="Histórico"
+                tabStyle={styles.tab}
+                activeTabStyle={styles.tab}
+                textStyle={styles.tabText}
+                activeTextStyle={styles.tabActiveText}
+                >
+                <CycleHistory logs={cycle.logs} />
+              </Tab>
+              <Tab
                 heading="Estatísticas"
                 tabStyle={styles.tab}
                 activeTabStyle={styles.tab}
@@ -119,15 +145,6 @@ export default class Cycle extends React.Component {
                 activeTextStyle={styles.tabActiveText}
               >
                 <CycleStats cycle={cycle} />
-              </Tab>
-              <Tab
-                heading="Histórico"
-                tabStyle={styles.tab}
-                activeTabStyle={styles.tab}
-                textStyle={styles.tabText}
-                activeTextStyle={styles.tabActiveText}
-              >
-                <CycleHistory logs={cycle.logs} />
               </Tab>
             </Tabs>
           </View>
@@ -153,7 +170,7 @@ const styles = StyleSheet.create({
     backgroundColor: white,
   },
   tab: {
-    backgroundColor: dark
+    backgroundColor: dark,
   },
   tabText: {
     color: white,

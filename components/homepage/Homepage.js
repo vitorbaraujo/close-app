@@ -11,14 +11,17 @@ import {
   Card,
   CardItem,
   Content,
+  Spinner,
 } from 'native-base';
 import moment from 'moment';
+// import PTRView from 'react-native-pull-to-refresh';
 import CText from '../commons/CText';
-import { goTo } from '../../utils/NavigationUtils';
+import CycleChart from '../charts/CycleChart';
 import { get } from '../../utils/Api';
+import { goTo } from '../../utils/NavigationUtils';
 import { getDuration } from '../../utils/CycleUtils';
 import { humanize, formatted } from '../../utils/DateUtils';
-import { dark, light, white, green } from '../../utils/Colors'
+import { dark, light, white, green, lighter, medium } from '../../utils/Colors';
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
@@ -37,12 +40,17 @@ export default class Homepage extends React.Component {
       cycles: [],
       lastCycle: null,
       beers: [],
+      loading: true,
     }
+
+    console.log('on constructor')
 
     this.navigation = props.navigation;
   }
 
   async componentDidMount() {
+    this.setState({ lastCycle: null });
+
     try {
       let user = await get('users/me/');
       this.setState({ currentUser: user || {} })
@@ -61,10 +69,18 @@ export default class Homepage extends React.Component {
           clearInterval(intervalId);
         }
       }, 3000)
+
+      this.setState({ loading: false })
     } catch(error) {
       console.log('[homepage] error on some get', error);
     }
   }
+
+  // _refresh() {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => { resolve() }, 1000)
+  //   });
+  // }
 
   _keyExtractor = (item) => item.id.toString();
 
@@ -115,69 +131,84 @@ export default class Homepage extends React.Component {
   }
 
   render() {
-    let { currentUser, cycles, lastCycle } = this.state;
+    let { currentUser, cycles, lastCycle, loading } = this.state;
+    console.log('cycles', cycles);
+
+    if (loading) {
+      return (
+        <Container style={{ backgroundColor: dark }}>
+          <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Spinner color={lighter} size="large" />
+          </Content>
+        </Container>
+      )
+    }
 
     return (
-      <Container>
-        {
-          lastCycle &&
-          <Button
-            style={{ backgroundColor: green }}
-            onPress={() => goTo(this.navigation, 'Cycle', { cycle: lastCycle, ongoing: true })}
-          >
-            <CText
-              text="Um ciclo está em andamento"
-              style={{ color: white, flex: 1 }}
-            />
-            <Icon
-              style={{ color: white }}
-              name="arrow-forward"
-            />
-          </Button>
-        }
-        <Header
-          noShadow={true}
-          style={styles.header}
-        >
-          <Left />
-          <Body />
-          <Right>
+      <Container style={{ backgroundColor: dark }}>
+        {/* <PTRView onRefresh={this._refresh}> */}
+          {
+            lastCycle &&
             <Button
-              transparent
-              onPress={() => goTo(this.navigation, 'Profile', { user: currentUser })}
+              style={{ backgroundColor: green }}
+              onPress={() => goTo(this.navigation, 'Cycle', { cycle: lastCycle, ongoing: true })}
             >
-              <View style={styles.profile}>
-                <CText bold text={`${currentUser.first_name} ${currentUser.last_name}`} />
-                <Icon style={styles.profileIcon} type="FontAwesome" name="user" />
-              </View>
+              <CText
+                text="Um ciclo está em andamento"
+                style={{ color: white, flex: 1 }}
+              />
+              <Icon
+                style={{ color: white }}
+                name="arrow-forward"
+              />
             </Button>
-          </Right>
-        </Header>
-        <Content contentContainerStyle={styles.content}>
-          <View style={styles.main}>
-          </View>
-          <View style={styles.timeline}>
-            {
-             cycles.length ?
-                (
-                  <FlatList
-                    data={cycles}
-                    extraData={this.state}
-                    keyExtractor={this._keyExtractor}
-                    renderItem={this._renderItem}
-                  />
-                ) :
-                (
-                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <CText
-                      style={{ color: light, fontSize: 25, textAlign: 'center' }}
-                      text="Você ainda não tem ciclos de produção"
+          }
+          <Header
+            noShadow={true}
+            style={styles.header}
+          >
+            <Left />
+            <Body />
+            <Right>
+              <Button
+                transparent
+                onPress={() => goTo(this.navigation, 'Profile', { user: currentUser })}
+              >
+                <View style={styles.profile}>
+                  <CText bold text={`${currentUser.first_name} ${currentUser.last_name}`} />
+                  <Icon style={styles.profileIcon} type="FontAwesome" name="user" />
+                </View>
+              </Button>
+            </Right>
+          </Header>
+          <Content padder contentContainerStyle={styles.content}>
+            <CText text="Garrafas fechadas por ciclo" style={{ color: 'white' }} />
+
+            <CycleChart data={cycles} />
+
+            <View style={styles.timeline}>
+              {
+              cycles.length ?
+                  (
+                    <FlatList
+                      data={cycles}
+                      extraData={this.state}
+                      keyExtractor={this._keyExtractor}
+                      renderItem={this._renderItem}
                     />
-                  </View>
-                )
-            }
-          </View>
-        </Content>
+                  ) :
+                  (
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                      <CText
+                        style={{ color: light, fontSize: 25, textAlign: 'center' }}
+                        text="Você ainda não tem ciclos de produção"
+                      />
+                    </View>
+                  )
+              }
+            </View>
+          </Content>
+        {/* </PTRView> */}
       </Container>
     )
   }
@@ -188,11 +219,12 @@ const styles = StyleSheet.create({
     backgroundColor: dark
   },
   content: {
-    flex: 1,
+    // flex: 1,
   },
   main: {
     flex: 1,
-    backgroundColor: dark
+    backgroundColor: dark,
+    justifyContent: 'center',
   },
   profile: {
     flexDirection: 'row',
@@ -203,9 +235,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   timeline: {
-    flex: 2,
-    backgroundColor: white,
-    padding: 10,
-    paddingBottom: 0,
+    flex: 3,
+    backgroundColor: dark,
+    // padding: 10,
+    // paddingBottom: 0,
   },
 });

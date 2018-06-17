@@ -9,6 +9,7 @@ import Cycle from '../components/cycle/Cycle'
 import Login from '../components/login/Login'
 import Register from '../components/login/Register'
 import SendRasp from '../components/SendRasp'
+import Config from '../components/Config'
 
 const mapNavigationStateParamsToProps = (SomeComponent) => {
   return class extends React.Component {
@@ -48,13 +49,27 @@ export const SignedIn = createStackNavigator(
     Cycle: {
       screen: mapNavigationStateParamsToProps(Cycle),
     },
+    Config: {
+      screen: mapNavigationStateParamsToProps(Config),
+    }
   },
   {
     initialRouteName: 'Homepage',
   }
 );
 
-export const createRootNavigator = (signedIn = false) => {
+export const Rasp = createStackNavigator(
+  {
+    SendRasp: {
+      screen: mapNavigationStateParamsToProps(SendRasp),
+    },
+  },
+  {
+    initialRouteName: 'SendRasp',
+  }
+);
+
+export const createRootNavigator = (raspSent = false, signedIn = false) => {
   return createSwitchNavigator(
     {
       SignedIn: {
@@ -62,10 +77,13 @@ export const createRootNavigator = (signedIn = false) => {
       },
       SignedOut: {
         screen: SignedOut
+      },
+      Rasp: {
+        screen: Rasp,
       }
     },
     {
-      initialRouteName: signedIn ? 'SignedIn' : 'SignedOut'
+      initialRouteName: !raspSent ? 'Rasp' : (signedIn ? 'SignedIn' : 'SignedOut')
     }
   );
 };

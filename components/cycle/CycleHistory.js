@@ -33,6 +33,7 @@ export default class CycleHistory extends React.Component {
 
   render() {
     let { logs } = this.props;
+    console.log('hist logs', logs);
 
     return (
       <Container style={{ padding: 10 }}>

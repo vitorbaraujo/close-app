@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { YellowBox, StatusBar } from 'react-native';
 import { Root } from 'native-base';
 import { createRootNavigator } from './navigation/Stack'
-import { isSignedIn, getToken } from './utils/TokenUtils';
+import { isSignedIn, getToken, getItem, removeItem } from './utils/TokenUtils';
 import { dark } from './utils/Colors';
 
 const warningsToIgnore = [
@@ -19,6 +19,7 @@ export default class App extends Component<Props> {
     super(props);
 
     this.state = {
+      raspSent: false,
       signedIn: false,
     }
   }
@@ -26,6 +27,12 @@ export default class App extends Component<Props> {
   async componentDidMount() {
     try {
       let signed = await isSignedIn();
+      let sent = await getItem('rasp_sent');
+
+      if (sent === 'true') {
+        this.setState({ raspSent: true })
+      }
+
       if (signed) {
         let token = await getToken();
         console.log('token', token);
@@ -39,7 +46,7 @@ export default class App extends Component<Props> {
   }
 
   render() {
-    const Layout = createRootNavigator(this.state.signedIn);
+    const Layout = createRootNavigator(this.state.raspSent, this.state.signedIn);
 
     return (
       <Root>

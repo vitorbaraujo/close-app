@@ -2,7 +2,7 @@ import TimeAgo from 'javascript-time-ago';
 import pt from 'javascript-time-ago/locale/pt'
 
 TimeAgo.locale(pt);
-this.timeAgo = new TimeAgo('pt-BR')
+this.timeAgo = new TimeAgo('pt-BR');
 
 export function humanize(date) {
   return this.timeAgo.format(date)
@@ -13,5 +13,5 @@ export function formatted(date) {
 }
 
 export function formattedHour(date) {
-  return date.format('hh:mm:ss')
+  return date.format('HH:mm:ss')
 }
