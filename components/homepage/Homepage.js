@@ -58,7 +58,7 @@ export default class Homepage extends React.Component {
 
   _refresh = () => {
     return new Promise(async (resolve) => {
-      console.log('heelo there', this.state)
+      console.log('refresh on homepage', this.state)
       await this._fetchData();
       setTimeout(() => { resolve() }, 1000)
     });
@@ -69,13 +69,16 @@ export default class Homepage extends React.Component {
 
     try {
       let user = await get('users/me/');
-      this.setState({ currentUser: user || {} })
-
-      let cycles = await get('users/me/cycles/');
-      this.setState({ cycles: cycles || {} });
-
       let beers = await get('users/me/beers/');
-      this.setState({ beers: beers || {} });
+      let cycles = await get('users/me/cycles/');
+
+      cycles = cycles.map(c => ({
+        ...c,
+        beerId: c.beer,
+        beer: beers.find(b => b.id === c.beer)
+      }))
+
+      this.setState({ beers, cycles, currentUser: user });
 
       let intervalId = setInterval(async () => {
         let last = await get('users/me/last_cycle/');
@@ -95,23 +98,14 @@ export default class Homepage extends React.Component {
   _keyExtractor = (item) => item.id.toString();
 
   _renderItem = ({ item }) => {
-    let beer = {};
-    if (this.state && this.state.beers) {
-      beer = this.state.beers.find(b => b.id === item.beer) || {};
-    }
     let cycle = item || {};
-
-    cycle = {
-      ...cycle,
-      beer,
-    };
 
     return (
       <Card>
         <CardItem
           header
           button
-          onPress={() => goTo(this.navigation, 'Cycle', { cycle })}
+          onPress={() => goTo(this.navigation, 'Cycle', { cycle, beer: cycle.beer })}
         >
           <Body>
             <CText text={`${cycle.beer.name} (${cycle.beer.type_name})`} />

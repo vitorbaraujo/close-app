@@ -6,6 +6,7 @@ import {
   Tabs, Tab, Content, Right
 } from 'native-base';
 import moment from 'moment';
+import PTRView from 'react-native-pull-to-refresh';
 import CText from '../commons/CText';
 import CycleHistory from './CycleHistory';
 import CycleStats from './CycleStats';
@@ -33,33 +34,63 @@ export default class Cycle extends React.Component {
 
   async componentDidMount() {
     try {
-      let intervalId = setInterval(async () => {
-        let cycle = await get(`cycles/${this.state.cycle.id}/`);
-        let logs = await get(`cycles/${this.state.cycle.id}/cycle_logs/`);
-
-        curLogs = {}
-
-        this.state.cycle.logs.forEach(l => curLogs[l.id] = l)
-        logs.forEach(l => curLogs[l.id] = l)
-
-        let parsedLogs = Object.values(curLogs).sort((a, b) => b.id - a.id)
-
-        console.log('parsed logs', parsedLogs);
-
-        this.setState({
-          cycle: {
-            ...cycle,
-            logs: parsedLogs,
-          },
-        })
-
-        if (this.state.cycle.end_time !== null) {
-          clearInterval(intervalId);
-        }
-      }, 3000)
+      await this._fetchData();
     } catch(error) {
       console.log('[cycle] Error on logs get', error);
     }
+  }
+
+  async _fetchData() {
+    try {
+      let beerId = this.props.cycle.beerId || this.props.cycle.beer;
+
+      let newCycle = await get(`cycles/${this.props.cycle.id}/`)
+      let beer = await get(`beers/${newCycle ? newCycle.beer : beerId}/`);
+      this.setState({
+        cycle: {
+          ...this.props.cycle,
+          beerId: beer.id,
+          beer: beer,
+        }
+      })
+
+      if (this.props.cycle.end_time === null) {
+        let intervalId = setInterval(async () => {
+          let cycle = await get(`cycles/${this.state.cycle.id}/`);
+          let logs = await get(`cycles/${this.state.cycle.id}/cycle_logs/`);
+
+          curLogs = {}
+
+          this.state.cycle.logs.forEach(l => curLogs[l.id] = l)
+          logs.forEach(l => curLogs[l.id] = l)
+
+          let parsedLogs = Object.values(curLogs).sort((a, b) => b.id - a.id)
+
+          console.log('parsed logs', parsedLogs);
+
+          this.setState({
+            cycle: {
+              ...cycle,
+              logs: parsedLogs,
+            },
+          })
+
+          if (this.state.cycle.end_time !== null) {
+            clearInterval(intervalId);
+          }
+        }, 3000)
+      }
+    } catch(error) {
+      console.log('error on fetch data', error)
+    }
+  }
+
+  _refresh = () => {
+    return new Promise(async (resolve) => {
+      console.log('refresh on cycle', this.state)
+      await this._fetchData();
+      setTimeout(() => { resolve() }, 1000)
+    });
   }
 
   _getDuration(cycle) {
@@ -104,16 +135,22 @@ export default class Cycle extends React.Component {
         </Header>
         <Content contentContainerStyle={{ flex: 1 }}>
           <View style={styles.main}>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-              <CText
-                text={cycle.beer_count}
-                style={{ color: white, fontSize: 60 }}
-                />
-              <CText
-                text={`garrafa${cycle.beer_count !== 1 ? 's' : ''} fechada${cycle.beer_count !== 1 ? 's' : ''} nesse ciclo`}
-                style={{ color: white }}
-                />
-            </View>
+            <PTRView onRefresh={this._refresh} style={{ flex: 1 }}>
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+                <CText
+                  text={cycle.beer_count}
+                  style={{ color: white, fontSize: 60 }}
+                  />
+                <CText
+                  text={`garrafa${cycle.beer_count !== 1 ? 's' : ''} fechada${cycle.beer_count !== 1 ? 's' : ''} nesse ciclo`}
+                  style={{ color: white }}
+                  />
+                <CText
+                  text={`${cycle.beer.name} (${cycle.beer.type_name})`}
+                  style={{ color: white }}
+                  />
+              </View>
+            </PTRView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <View>
                 <CText
