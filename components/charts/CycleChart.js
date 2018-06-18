@@ -11,7 +11,7 @@ export default class CycleChart extends Component {
 
     render() {
         let { data } = this.props
-        let parsedData = data.sort((a, b) => b.id - a.id).map((cycle, index) => ({ x: index + 1, y: cycle.beer_count }))
+        let parsedData = data.sort((a, b) => a.id - b.id).map((cycle, index) => ({ x: index + 1, y: cycle.beer_count }))
 
         return (
             <View style={styles.container}>

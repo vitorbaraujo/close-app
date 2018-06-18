@@ -14,7 +14,7 @@ import {
   Spinner,
 } from 'native-base';
 import moment from 'moment';
-// import PTRView from 'react-native-pull-to-refresh';
+import PTRView from 'react-native-pull-to-refresh';
 import CText from '../commons/CText';
 import CycleChart from '../charts/CycleChart';
 import { get } from '../../utils/Api';
@@ -49,17 +49,36 @@ export default class Homepage extends React.Component {
   }
 
   async componentDidMount() {
+    try {
+      await this._fetchData();
+    } catch(error) {
+      console.log('error on fetch data');
+    }
+  }
+
+  _refresh = () => {
+    return new Promise(async (resolve) => {
+      console.log('refresh on homepage', this.state)
+      await this._fetchData();
+      setTimeout(() => { resolve() }, 1000)
+    });
+  }
+
+  async _fetchData() {
     this.setState({ lastCycle: null });
 
     try {
       let user = await get('users/me/');
-      this.setState({ currentUser: user || {} })
-
-      let cycles = await get('users/me/cycles/');
-      this.setState({ cycles: cycles || {} });
-
       let beers = await get('users/me/beers/');
-      this.setState({ beers: beers || {} });
+      let cycles = await get('users/me/cycles/');
+
+      cycles = cycles.map(c => ({
+        ...c,
+        beerId: c.beer,
+        beer: beers.find(b => b.id === c.beer)
+      }))
+
+      this.setState({ beers, cycles, currentUser: user });
 
       let intervalId = setInterval(async () => {
         let last = await get('users/me/last_cycle/');
@@ -76,32 +95,20 @@ export default class Homepage extends React.Component {
     }
   }
 
-  // _refresh() {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => { resolve() }, 1000)
-  //   });
-  // }
-
   _keyExtractor = (item) => item.id.toString();
 
   _renderItem = ({ item }) => {
-    const beer = this.state.beers.find(b => b.id === item.beer) || {};
     let cycle = item || {};
-
-    cycle = {
-      ...cycle,
-      beer,
-    };
 
     return (
       <Card>
         <CardItem
           header
           button
-          onPress={() => goTo(this.navigation, 'Cycle', { cycle })}
+          onPress={() => goTo(this.navigation, 'Cycle', { cycle, beer: cycle.beer })}
         >
           <Body>
-            <CText text={cycle.beer.name} />
+            <CText text={`${cycle.beer.name} (${cycle.beer.type_name})`} />
           </Body>
         </CardItem>
         <CardItem
@@ -132,7 +139,6 @@ export default class Homepage extends React.Component {
 
   render() {
     let { currentUser, cycles, lastCycle, loading } = this.state;
-    console.log('cycles', cycles);
 
     if (loading) {
       return (
@@ -146,7 +152,7 @@ export default class Homepage extends React.Component {
 
     return (
       <Container style={{ backgroundColor: dark }}>
-        {/* <PTRView onRefresh={this._refresh}> */}
+        <PTRView onRefresh={this._refresh}>
           {
             lastCycle &&
             <Button
@@ -181,34 +187,35 @@ export default class Homepage extends React.Component {
               </Button>
             </Right>
           </Header>
-          <Content padder contentContainerStyle={styles.content}>
-            <CText text="Garrafas fechadas por ciclo" style={{ color: 'white' }} />
 
-            <CycleChart data={cycles} />
-
-            <View style={styles.timeline}>
-              {
+            {
               cycles.length ?
-                  (
+              (
+                <Content padder contentContainerStyle={styles.content}>
+                  <CText text="Garrafas fechadas por ciclo" style={{ color: 'white' }} />
+                  <CycleChart data={[...cycles]} />
+                  <CText text="Últimos ciclos" style={{ color: 'white', marginBottom: 20 }} />
+                  <View style={{ flex: 1 }}>
                     <FlatList
                       data={cycles}
                       extraData={this.state}
                       keyExtractor={this._keyExtractor}
                       renderItem={this._renderItem}
                     />
-                  ) :
-                  (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                      <CText
-                        style={{ color: light, fontSize: 25, textAlign: 'center' }}
-                        text="Você ainda não tem ciclos de produção"
-                      />
-                    </View>
-                  )
-              }
-            </View>
-          </Content>
-        {/* </PTRView> */}
+                  </View>
+                </Content>
+              )
+              :
+              (
+                <Content padder contentContainerStyle={styles.content}>
+                  <CText
+                    style={{ color: light, fontSize: 25, textAlign: 'center' }}
+                    text="Você ainda não tem ciclos de produção"
+                  />
+                </Content>
+              )
+            }
+        </PTRView>
       </Container>
     )
   }
@@ -219,7 +226,7 @@ const styles = StyleSheet.create({
     backgroundColor: dark
   },
   content: {
-    // flex: 1,
+    backgroundColor: dark,
   },
   main: {
     flex: 1,
@@ -233,11 +240,5 @@ const styles = StyleSheet.create({
   profileIcon: {
     color: 'white',
     marginLeft: 10,
-  },
-  timeline: {
-    flex: 3,
-    backgroundColor: dark,
-    // padding: 10,
-    // paddingBottom: 0,
   },
 });

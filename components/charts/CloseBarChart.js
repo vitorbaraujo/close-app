@@ -11,19 +11,21 @@ export default class App extends React.Component {
     let maxY = Math.max(...data.map(d => d.y)) + delta
 
     return (
-      <VictoryBar
-        data={data}
-        x="x"
-        y="y"
-        cornerRadius={2}
-        labels={(d) => d.y}
-        height={200}
-        style={{
-          data: { fill: lighter },
-          labels: { fill: white, fontSize: 8, fontFamily: 'Lato-Regular' }
-        }}
-        padding={{ left: 25, right: 25, top: 20, bottom: 30 }}
-      />
+      <View pointerEvents="none">
+        <VictoryBar
+          data={data}
+          x="x"
+          y="y"
+          cornerRadius={2}
+          labels={(d) => d.y}
+          height={200}
+          style={{
+            data: { fill: lighter },
+            labels: { fill: white, fontSize: 8, fontFamily: 'Lato-Regular' }
+          }}
+          padding={{ left: 25, right: 25, top: 20, bottom: 30 }}
+        />
+      </View>
     );
   }
 }

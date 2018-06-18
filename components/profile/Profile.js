@@ -13,7 +13,7 @@ import {
   Label,
   Thumbnail,
 } from 'native-base';
-import { removeToken } from '../../utils/TokenUtils';
+import { removeToken, getItem } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
 import CText from '../commons/CText';
 import gravatar from 'gravatar';
@@ -59,7 +59,13 @@ export default class Profile extends React.Component {
         this.setState({ token: null });
       }
 
-      goTo(this.navigation, 'SignedOut')
+      let sent = await getItem('rasp_sent');
+
+      if (sent === 'true') {
+        goTo(this.navigation, 'SignedOut')
+      } else {
+        goTo(this.navigation, 'SendRasp')
+      }
     } catch(error) {
       console.log('error logging out')
     }
@@ -71,6 +77,9 @@ export default class Profile extends React.Component {
 
   render() {
     let { user, editing, avatar, form } = this.state;
+
+    let firstName = user.first_name || '';
+    let lastName = user.last_name || '';
 
     return (
       <Container>
@@ -104,7 +113,7 @@ export default class Profile extends React.Component {
             />
             <CText
               bold
-              text={`${user.first_name} ${user.last_name}`}
+              text={`${firstName} ${lastName}`}
               style={{ color: white, fontSize: 20 }}
             />
           </View>

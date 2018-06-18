@@ -64,7 +64,7 @@ export default class Register extends Component {
       if (result) {
         await this._login();
       } else {
-        this.setState({ loading: false })
+        this.setState({ loading: false, error: 'Alguma coisa deu errado' })
       }
     } catch(error) {
       console.log('error on _register', error)
@@ -81,6 +81,8 @@ export default class Register extends Component {
       if (result) {
         this.setState({ signedIn: true })
         goTo(this.navigation, 'SignedIn')
+      } else {
+        this.setState({ error: 'Alguma coisa deu errado' })
       }
     } catch (error) {
       console.log('[login screen] error log in', error)
@@ -134,20 +136,16 @@ export default class Register extends Component {
               </View>
             </Button>
 
-            <CText
-              style={styles.alreadyRegistered}
-              subsubtitle
-              text="Já tem uma conta? Clique no botão abaixo para entrar"
-            />
-
             <Button
-              style={{ backgroundColor: light }}
+              transparent
               full
+              style={{ marginTop: 50 }}
               onPress={() => goTo(this.navigation, "Login")}
             >
-              <View>
-                <CText text="Entrar" />
-              </View>
+              <CText
+                style={{ color: grey, textDecorationLine: 'underline' }}
+                text="Já tem uma conta? Entre aqui"
+              />
             </Button>
 
             <CText
@@ -181,7 +179,7 @@ const styles = StyleSheet.create({
   },
   formButton: {
     marginTop: 50,
-    backgroundColor: medium
+    backgroundColor: light
   },
   alreadyRegistered: {
     fontSize: 12,

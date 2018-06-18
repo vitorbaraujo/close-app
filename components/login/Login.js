@@ -11,13 +11,15 @@ import {
   Input,
   Label,
   Button,
-  Text,
   Icon,
+  Thumbnail,
+  Spinner,
 } from 'native-base';
 import { goTo } from '../../utils/NavigationUtils';
 import { login } from '../../utils/Api';
 import CText from '../commons/CText';
 import { light, lighter, red, grey, medium, white } from '../../utils/Colors'
+var logo = require('../../assets/images/logo.png')
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -33,6 +35,7 @@ export default class Cycle extends React.Component {
       error: '',
       token: null,
       showPassword: false,
+      loading: false,
       form: [
         { label: 'Nome de usuário', field: 'username' },
         { label: 'Senha', field: 'password' },
@@ -44,14 +47,17 @@ export default class Cycle extends React.Component {
 
   async _login() {
     try {
+      this.setState({ loading: true })
       let result = await login({
         username: this.state.username,
         password: this.state.password,
       })
 
       if (result) {
-        this.setState({ signedIn: true })
+        this.setState({ signedIn: true, loading: false })
         goTo(this.navigation, 'SignedIn')
+      } else {
+        this.setState({ loading: false, error: 'Usuário e/ou senha inválido(s)' })
       }
     } catch(error) {
       console.log('[login screen] error log in', error)
@@ -63,12 +69,17 @@ export default class Cycle extends React.Component {
   }
 
   render() {
-    let { form, showPassword } = this.state
+    let { form, showPassword, loading } = this.state
 
     return (
       <Container style={styles.container}>
         <Content padder contentContainerStyle={styles.content}>
           <View>
+            <Thumbnail
+              large
+              style={{ alignSelf: 'center' }}
+              source={logo}
+            />
             <CText
               text="Bem-vindo ao Close"
               style={styles.welcomeText}
@@ -99,30 +110,26 @@ export default class Cycle extends React.Component {
               full
               onPress={() => this._login()}
             >
-              <View>
-                <CText text="Entrar" />
-              </View>
+              <CText text={ loading ? 'Entrar...' : 'Entrar'} />
+              {loading && <Spinner size="small" color={white} />}
+            </Button>
+
+            <Button
+              transparent
+              full
+              style={styles.newUser}
+              onPress={() => goTo(this.navigation, 'Register')}
+            >
+              <CText
+                style={{ color: grey, textDecorationLine: 'underline' }}
+                text="Registre-se aqui"
+              />
             </Button>
 
             <CText
-              style={styles.newUser}
-              subsubtitle
-              text="Não tem uma conta? Clique no botão abaixo para se registrar"
+              text={this.state.error}
+              style={{ color: red, alignSelf: 'center', marginTop: 20 }}
             />
-
-            <Button
-              full
-              style={{ backgroundColor: medium }}
-              onPress={() => goTo(this.navigation, 'Register')}
-            >
-              <View>
-                <CText text="Registrar" />
-              </View>
-            </Button>
-
-            <Text style={{ color: red, alignSelf: 'center' }}>
-              {this.state.error}
-            </Text>
           </View>
         </Content>
       </Container>
@@ -153,10 +160,6 @@ const styles = StyleSheet.create({
     backgroundColor: light
   },
   newUser: {
-    fontSize: 12,
-    color: lighter,
-    textAlign: 'center',
     marginTop: 50,
-    marginBottom: 20,
   }
 })

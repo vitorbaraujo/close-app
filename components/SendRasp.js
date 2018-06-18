@@ -20,6 +20,7 @@ import {
 } from 'native-base';
 import { ZeroMQ } from 'react-native-zeromq';
 import { goTo } from '../utils/NavigationUtils';
+import { login } from '../utils/Api';
 import { saveItem, getItem, removeItem, isSignedIn } from '../utils/TokenUtils';
 import CText from './commons/CText';
 import { light, lighter, dark, red, grey, white } from '../utils/Colors'
@@ -39,16 +40,18 @@ export default class SendRasp extends React.Component {
       username: '',
       password: '',
       error: '',
+      showSsidPassword: false,
       showPassword: false,
       connected: false,
       socket: null,
       sent: false,
       loading: false,
+      logging: false,
       form: [
-        { label: 'Nome da rede', field: 'ssid' },
-        { label: 'Senha da rede', field: 'ssidPassword' },
-        { label: 'Nome de usuário', field: 'username' },
-        { label: 'Senha', field: 'password' },
+        { label: 'Nome da rede', field: 'ssid', password: false },
+        { label: 'Senha da rede', field: 'ssidPassword', password: true, passField: 'showSsidPassword' },
+        { label: 'Nome de usuário', field: 'username', password: false },
+        { label: 'Senha', field: 'password', password: true, passField: 'showPassword' },
       ]
     }
 
@@ -94,9 +97,8 @@ export default class SendRasp extends React.Component {
         let response = await this.state.socket.send(message);
 
         if (response) {
-          let shit = await saveItem('rasp_sent', 'true');
-
-          this.setState({ sent: true });
+          await saveItem('rasp_sent', 'true');
+          this.setState({ sent: true, logging: true });
         } else {
           console.log('no response')
         }
@@ -106,10 +108,39 @@ export default class SendRasp extends React.Component {
 
     } else {
       console.log('not connected');
-      this.setState({ loading: false })
+      this.setState({ loading: false, logging: false })
     }
 
     if (this.state.sent) {
+      let loginResult = await this._login();
+
+      if (loginResult === false) {
+        console.log('login result', loginResult)
+        this.setState({ logging: false, error: 'Usuário e/ou senha inválido(s)' })
+      }
+    }
+  }
+
+  async _login() {
+    try {
+      let result = await login({
+        username: this.state.username,
+        password: this.state.password,
+      })
+
+      if (result) {
+        this.setState({ signedIn: true })
+        goTo(this.navigation, 'SignedIn')
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log('[send rasp screen] error log in', error)
+    }
+  }
+
+  async _skip() {
+    try {
       let signed = await isSignedIn();
 
       if (signed) {
@@ -117,6 +148,8 @@ export default class SendRasp extends React.Component {
       } else {
         goTo(this.navigation, 'SignedOut')
       }
+    } catch(error) {
+      console.log('error on skip', error)
     }
   }
 
@@ -125,7 +158,7 @@ export default class SendRasp extends React.Component {
   }
 
   render() {
-    let { form, showPassword, loading } = this.state
+    let { form, loading, logging } = this.state
 
     return (
       <Container style={styles.container}>
@@ -138,6 +171,11 @@ export default class SendRasp extends React.Component {
 
             <CText
               text="Insira o nome a senha da sua rede Wi-Fi"
+              style={{ color: light, textAlign: 'center', marginTop: 20 }}
+            />
+
+            <CText
+              text="e seu usuário e senha para entrar na aplicação"
               style={{ color: light, textAlign: 'center' }}
             />
             <Form>
@@ -146,14 +184,14 @@ export default class SendRasp extends React.Component {
                   <Label style={styles.font}>{f.label}</Label>
                   <Input
                     style={styles.font}
-                    secureTextEntry={f.field === 'password' && !showPassword}
+                    secureTextEntry={f.password && !this.state[f.passField]}
                     onChangeText={(text) => this._updateText(f.field, text)}
                   />
-                  {(f.field === 'password' || f.field === 'ssidPassword') &&
+                  {f.password &&
                     <Icon
                       type="Entypo"
-                      name={!showPassword ? 'eye' : 'eye-with-line'}
-                      onPress={() => this.setState({ showPassword: !this.state.showPassword })}
+                      name={!this.state[f.passField] ? 'eye' : 'eye-with-line'}
+                      onPress={() => this.setState({ [f.passField]: !this.state[f.passField] })}
                       style={{ color: grey }}
                     />
                   }
@@ -167,9 +205,22 @@ export default class SendRasp extends React.Component {
               onPress={() => this._sendInfo()}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <CText text={loading ? 'Enviando...' : 'Enviar'} />
-                { loading && <Spinner size="small" color={white}/>}
+                <CText text={loading ? 'Enviando...' : (logging ? 'Entrando...' : 'Enviar') } />
+                { (loading || logging) && <Spinner size="small" color={white}/>}
               </View>
+            </Button>
+
+            <Button
+              transparent
+              full
+              style={{ marginTop: 25 }}
+              onPress={() => this._skip()}
+            >
+              <CText
+                bold
+                text="PULAR"
+                style={{ color: grey }}
+              />
             </Button>
 
             <Text style={{ color: red, alignSelf: 'center' }}>

@@ -12,7 +12,7 @@ export default class PieCycleChart extends Component {
 
     render() {
         let { data } = this.props
-        
+
         let dataObj = data.logs.reduce(
             (acc, val) => {
                 acc[val.code] = (acc[val.code] || 0) + 1
@@ -28,6 +28,7 @@ export default class PieCycleChart extends Component {
         return (
             <View style={styles.container}>
                 <CText text="Eventos neste ciclo" />
+                <CText text={`Total de eventos: ${data.logs.length}`} />
                 <ClosePieChart data={parsedData} />
             </View>
         )
