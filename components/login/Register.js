@@ -95,6 +95,9 @@ export default class Register extends Component {
 
   render() {
     let { form, showPassword, loading } = this.state
+    let { username, password, firstName, lastName, email } = this.state;
+
+    let disabled = !username.length || !password.length || !firstName.length || !lastName.length || !email.length;
 
     return (
       <Container>
@@ -106,9 +109,9 @@ export default class Register extends Component {
             />
             <Form>
               {form.map((f, i) =>
-                <Item key={i} floatingLabel>
-                  <Label style={styles.font}>{f.label}</Label>
+                <Item key={i}>
                   <Input
+                    placeholder={f.label}
                     style={styles.font}
                     secureTextEntry={f.field === 'password' && !showPassword}
                     onChangeText={(text) => this._updateText(f.field, text)}
@@ -127,7 +130,8 @@ export default class Register extends Component {
 
             <Button
               full
-              style={styles.formButton}
+              disabled={disabled}
+              style={!disabled ? styles.formButton : { marginTop: 50 }}
               onPress={() => this._register()}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>

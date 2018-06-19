@@ -84,12 +84,15 @@ export default class NewBeer extends Component {
 
   render() {
     let { form, beers, beerId, loading, msg } = this.state;
+    let { beerName, beerType, beerPrice } = this.state;
 
     let buttons = beers.map(b => ({ label: `${b.name} (${b.type_name})`, id: b.id }));
     buttons.push({ label: 'Cancelar', id: -1 });
     let cancelButton = buttons.length - 1;
 
     let curBeer = beers.find(b => b.id === beerId);
+
+    let disabled = beerId === null && (!beerName.length || !beerType.length || !beerPrice.length);
 
     return (
       <Container>
@@ -157,9 +160,9 @@ export default class NewBeer extends Component {
 
           <Form>
             {form.map((f, i) =>
-              <Item key={i} floatingLabel>
-                <Label style={styles.font}>{f.label}</Label>
+              <Item key={i}>
                 <Input
+                  placeholder={f.label}
                   value={this.state[f.field]}
                   style={styles.font}
                   keyboardType={f.type === 'number' ? 'numeric' : 'default'}
@@ -170,8 +173,9 @@ export default class NewBeer extends Component {
           </Form>
 
           <Button
-            style={styles.formButton}
             full
+            disabled={disabled}
+            style={!disabled ? styles.formButton : { marginTop: 50 }}
             onPress={() => this._updateCycle()}
           >
             <CText

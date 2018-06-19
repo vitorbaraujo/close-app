@@ -70,6 +70,9 @@ export default class Cycle extends React.Component {
 
   render() {
     let { form, showPassword, loading } = this.state
+    let { username, password } = this.state;
+
+    let disabled = !username.length || !password.length;
 
     return (
       <Container style={styles.container}>
@@ -86,9 +89,9 @@ export default class Cycle extends React.Component {
             />
             <Form>
               {form.map((f, i) =>
-                <Item key={i} floatingLabel>
-                  <Label style={styles.font}>{f.label}</Label>
+                <Item key={i}>
                   <Input
+                    placeholder={f.label}
                     style={styles.font}
                     secureTextEntry={f.field === 'password' && !showPassword}
                     onChangeText={(text) => this._updateText(f.field, text)}
@@ -106,11 +109,12 @@ export default class Cycle extends React.Component {
             </Form>
 
             <Button
-              style={styles.formButton}
               full
+              disabled={disabled}
+              style={!disabled ? styles.formButton : { marginTop: 50 }}
               onPress={() => this._login()}
             >
-              <CText text={ loading ? 'Entrar...' : 'Entrar'} />
+              <CText text={ loading ? 'Entrando...' : 'Entrar'} />
               {loading && <Spinner size="small" color={white} />}
             </Button>
 

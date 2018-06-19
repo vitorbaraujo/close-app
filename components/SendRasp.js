@@ -159,6 +159,9 @@ export default class SendRasp extends React.Component {
 
   render() {
     let { form, loading, logging } = this.state
+    let { ssid, ssidPassword, username, password } = this.state;
+
+    let disabled = !ssid.length || !ssidPassword.length || !username.length || !password.length;
 
     return (
       <Container style={styles.container}>
@@ -180,9 +183,9 @@ export default class SendRasp extends React.Component {
             />
             <Form>
               {form.map((f, i) =>
-                <Item key={i} floatingLabel>
-                  <Label style={styles.font}>{f.label}</Label>
+                <Item key={i}>
                   <Input
+                    placeholder={f.label}
                     style={styles.font}
                     secureTextEntry={f.password && !this.state[f.passField]}
                     onChangeText={(text) => this._updateText(f.field, text)}
@@ -201,7 +204,8 @@ export default class SendRasp extends React.Component {
 
             <Button
               full
-              style={styles.formButton}
+              disabled={disabled}
+              style={!disabled ? styles.formButton : { marginTop: 50 }}
               onPress={() => this._sendInfo()}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
@@ -256,6 +260,6 @@ const styles = StyleSheet.create({
   },
   formButton: {
     marginTop: 50,
-    backgroundColor: light
+    backgroundColor: light,
   }
 })
