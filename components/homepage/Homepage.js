@@ -12,6 +12,7 @@ import {
   CardItem,
   Content,
   Spinner,
+  Badge,
 } from 'native-base';
 import moment from 'moment';
 import PTRView from 'react-native-pull-to-refresh';
@@ -116,11 +117,22 @@ export default class Homepage extends React.Component {
               :
               (
                 cycle.end_time === null ?
-                <CText text="Ciclo em andamento" style={{ textDecorationLine: 'underline' }} />
-                : null
+                <CText text="Sem cerveja selecionada" style={{ color: grey }} />
+                :
+                null
               )
             }
           </Body>
+          <Right>
+            <Badge
+              success={cycle.end_time === null}
+            >
+              <CText
+                text={cycle.end_time ? 'Finalizado' : 'Em andamento'}
+                style={{ color: white }}
+              />
+            </Badge>
+          </Right>
         </CardItem>
         <CardItem
           style={{ paddingTop: 0 }}

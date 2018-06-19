@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import {
   Container, Button, Header,
   Body, Left, Icon,
-  Tabs, Tab, Content, Right
+  Tabs, Tab, Content, Right, Badge
 } from 'native-base';
 import moment from 'moment';
 import PTRView from 'react-native-pull-to-refresh';
@@ -157,6 +157,15 @@ export default class Cycle extends React.Component {
                   />
                   : null
                 }
+                <Badge
+                  success={cycle.end_time === null}
+                  style={{ alignSelf: 'center', marginTop: 10 }}
+                >
+                  <CText
+                    text={cycle.end_time ? 'Finalizado' : 'Em andamento'}
+                    style={{ color: white }}
+                  />
+                </Badge>
               </View>
             </PTRView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -215,13 +224,13 @@ const styles = StyleSheet.create({
     elevation: 0
   },
   main: {
-    flex: 1,
+    flex: 2,
     backgroundColor: dark,
     paddingLeft: 20,
     paddingRight: 20,
   },
   tabs: {
-    flex: 2,
+    flex: 3,
     backgroundColor: white,
   },
   tab: {
