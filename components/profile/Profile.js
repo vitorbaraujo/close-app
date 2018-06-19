@@ -13,7 +13,7 @@ import {
   Label,
   Thumbnail,
 } from 'native-base';
-import { removeToken, getItem } from '../../utils/TokenUtils';
+import { removeToken, getItem, removeItem } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
 import CText from '../commons/CText';
 import gravatar from 'gravatar';
@@ -60,6 +60,7 @@ export default class Profile extends React.Component {
       }
 
       let sent = await getItem('rasp_sent');
+      await removeItem('username');
 
       if (sent === 'true') {
         goTo(this.navigation, 'SignedOut')

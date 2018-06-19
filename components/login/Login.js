@@ -16,7 +16,8 @@ import {
   Spinner,
 } from 'native-base';
 import { goTo } from '../../utils/NavigationUtils';
-import { login } from '../../utils/Api';
+import { saveItem, getItem } from '../../utils/TokenUtils';
+import { login, get } from '../../utils/Api';
 import CText from '../commons/CText';
 import { light, lighter, red, grey, medium, white } from '../../utils/Colors'
 var logo = require('../../assets/images/logo.png')
@@ -55,6 +56,8 @@ export default class Cycle extends React.Component {
 
       if (result) {
         this.setState({ signedIn: true, loading: false })
+        let me = await get('users/me/')
+        await saveItem('username', me.username);
         goTo(this.navigation, 'SignedIn')
       } else {
         this.setState({ loading: false, error: 'Usuário e/ou senha inválido(s)' })

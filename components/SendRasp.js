@@ -20,8 +20,8 @@ import {
 } from 'native-base';
 import { ZeroMQ } from 'react-native-zeromq';
 import { goTo } from '../utils/NavigationUtils';
-import { login } from '../utils/Api';
-import { saveItem, getItem, removeItem, isSignedIn } from '../utils/TokenUtils';
+import { login, get } from '../utils/Api';
+import { saveItem, getItem, removeItem, isSignedIn, getToken, removeToken } from '../utils/TokenUtils';
 import CText from './commons/CText';
 import { light, lighter, dark, red, grey, white } from '../utils/Colors'
 
@@ -47,15 +47,34 @@ export default class SendRasp extends React.Component {
       sent: false,
       loading: false,
       logging: false,
+      savedUsername: '',
+      savedToken: '',
+      logged: false,
       form: [
         { label: 'Nome da rede', field: 'ssid', password: false },
         { label: 'Senha da rede', field: 'ssidPassword', password: true, passField: 'showSsidPassword' },
+      ],
+      formNew: [
         { label: 'Nome de usuário', field: 'username', password: false },
         { label: 'Senha', field: 'password', password: true, passField: 'showPassword' },
       ]
     }
 
     this.navigation = props.navigation;
+  }
+
+  async componentDidMount() {
+    try {
+      let savedUsername = await getItem('username');
+      let savedToken = await getToken()
+      this.setState({
+        savedUsername,
+        savedToken,
+        logged: savedUsername && !!savedUsername.length && savedToken && !!savedToken.length,
+      });
+    } catch(error) {
+      console.log('error on get username token');
+    }
   }
 
   async _createSocket() {
@@ -89,12 +108,21 @@ export default class SendRasp extends React.Component {
       password: this.state.password,
     })
 
+    let messageLogged = JSON.stringify({
+      ssid: this.state.ssid,
+      ssid_password: this.state.ssidPassword,
+      token: this.state.savedToken,
+    })
+
+    console.log(this.state.logged, messageLogged);
+
     this.setState({ loading: true })
     await this._createSocket();
 
     if (this.state.connected) {
       try {
-        let response = await this.state.socket.send(message);
+        let msgToSend = this.state.logged ? messageLogged : message;
+        let response = await this.state.socket.send(msgToSend);
 
         if (response) {
           await saveItem('rasp_sent', 'true');
@@ -123,16 +151,24 @@ export default class SendRasp extends React.Component {
 
   async _login() {
     try {
-      let result = await login({
-        username: this.state.username,
-        password: this.state.password,
-      })
-
-      if (result) {
-        this.setState({ signedIn: true })
+      if (this.state.logged) {
         goTo(this.navigation, 'SignedIn')
       } else {
-        return false;
+        let result = await login({
+          username: this.state.username,
+          password: this.state.password,
+        })
+
+        if (result) {
+          this.setState({ signedIn: true })
+
+          let me = await get('users/me/');
+          await saveItem('username', me.username);
+
+          goTo(this.navigation, 'SignedIn')
+        } else {
+          return false;
+        }
       }
     } catch (error) {
       console.log('[send rasp screen] error log in', error)
@@ -157,11 +193,26 @@ export default class SendRasp extends React.Component {
     this.setState({ [label]: text })
   }
 
+  async _logAsOtherUser() {
+    try {
+      await removeItem('username');
+      await removeToken();
+      this.setState({
+        savedUsername: null,
+        savedToken: null,
+        logged: false,
+      })
+    } catch(error) {
+      console.log('error on remove username and token from asyncstorage')
+    }
+  }
+
   render() {
-    let { form, loading, logging } = this.state
+    let { form, formNew, loading, logging, savedUsername, savedToken, logged } = this.state
     let { ssid, ssidPassword, username, password } = this.state;
 
     let disabled = !ssid.length || !ssidPassword.length || !username.length || !password.length;
+    let loggedDisabled = !ssid.length || !ssidPassword.length;
 
     return (
       <Container style={styles.container}>
@@ -200,19 +251,70 @@ export default class SendRasp extends React.Component {
                   }
                 </Item>
               )}
+              {
+                !logged ?
+                formNew.map((f, i) =>
+                  <Item key={i}>
+                    <Input
+                      placeholder={f.label}
+                      style={styles.font}
+                      secureTextEntry={f.password && !this.state[f.passField]}
+                      onChangeText={(text) => this._updateText(f.field, text)}
+                    />
+                    {f.password &&
+                      <Icon
+                        type="Entypo"
+                        name={!this.state[f.passField] ? 'eye' : 'eye-with-line'}
+                        onPress={() => this.setState({ [f.passField]: !this.state[f.passField] })}
+                        style={{ color: grey }}
+                      />
+                    }
+                  </Item>
+                )
+                :
+                (
+                  <View>
+                    <Button
+                      full
+                      rounded
+                      small
+                      disabled={loggedDisabled}
+                      style={ !loggedDisabled ? styles.loggedButton : { marginTop: 20 } }
+                      onPress={() => this._sendInfo()}
+                    >
+                      <CText text={`Entre como ${this.state.savedUsername}`} />
+                    </Button>
+
+                    {
+                      <Button
+                        transparent
+                        onPress={() => this._logAsOtherUser()}
+                        style={{ alignSelf: 'center' }}
+                      >
+                          <CText
+                            text="Entrar como outro usuário"
+                            style={{ color: grey, textDecorationLine: 'underline' }}
+                          />
+                      </Button>
+                    }
+                  </View>
+                )
+              }
             </Form>
 
-            <Button
-              full
-              disabled={disabled}
-              style={!disabled ? styles.formButton : { marginTop: 50 }}
-              onPress={() => this._sendInfo()}
-            >
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <CText text={loading ? 'Enviando...' : (logging ? 'Entrando...' : 'Enviar') } />
-                { (loading || logging) && <Spinner size="small" color={white}/>}
-              </View>
-            </Button>
+            { !logged &&
+               <Button
+                full
+                disabled={disabled}
+                style={!disabled ? styles.formButton : { marginTop: 50 }}
+                onPress={() => this._sendInfo()}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                  <CText text={loading ? 'Enviando...' : (logging ? 'Entrando...' : 'Enviar') } />
+                  { (loading || logging) && <Spinner size="small" color={white}/>}
+                </View>
+              </Button>
+            }
 
             <Button
               transparent
@@ -261,5 +363,9 @@ const styles = StyleSheet.create({
   formButton: {
     marginTop: 50,
     backgroundColor: light,
-  }
+  },
+  loggedButton: {
+    marginTop: 20,
+    backgroundColor: light
+  },
 })

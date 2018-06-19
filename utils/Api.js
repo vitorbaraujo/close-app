@@ -1,7 +1,7 @@
 import { getToken, saveToken } from './TokenUtils';
 
-let uri = 'http://192.168.15.5:8000/'
-// let uri = 'https://closeapi.herokuapp.com/'
+// let uri = 'http://192.168.15.5:8000/'
+let uri = 'https://closeapi.herokuapp.com/'
 
 let headers = {
   'Accept': "application/json",

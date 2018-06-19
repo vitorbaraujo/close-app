@@ -14,9 +14,9 @@ import {
   Icon,
   Spinner,
 } from 'native-base'
-import { saveToken } from '../../utils/TokenUtils';
+import { saveToken, saveItem } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
-import { register, login } from '../../utils/Api';
+import { register, login, get } from '../../utils/Api';
 import CText from '../commons/CText';
 import { light, lighter, red, grey, medium, white } from '../../utils/Colors'
 
@@ -80,6 +80,9 @@ export default class Register extends Component {
 
       if (result) {
         this.setState({ signedIn: true })
+        let me = await get('users/me/')
+        await saveItem('username', me.username);
+
         goTo(this.navigation, 'SignedIn')
       } else {
         this.setState({ error: 'Alguma coisa deu errado' })
