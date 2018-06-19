@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
-import { Container, Content, Form, Label, Input, Item, Button, View, Spinner, ActionSheet } from 'native-base'
-import { light, white, lighter, grey, green } from '../../utils/Colors'
+import { Container, Content, Form, Label, Input, Item, Button, View, Spinner, ActionSheet, Header, Left, Body, Icon } from 'native-base'
+import { light, white, lighter, grey, green, darker, dark } from '../../utils/Colors'
 import { get } from '../../utils/Api'
 import CText from '../commons/CText'
+import { goTo } from '../../utils/NavigationUtils';
 
 export default class NewBeer extends Component {
   static navigationOptions = {
@@ -29,6 +30,8 @@ export default class NewBeer extends Component {
       selected1: "key1",
       beers: [],
     }
+
+    this.navigation = this.props.navigation;
   }
 
   async componentDidMount() {
@@ -90,6 +93,21 @@ export default class NewBeer extends Component {
 
     return (
       <Container>
+        <Header
+          androidStatusBarColor={darker}
+          noShadow={true}
+          style={styles.header}
+        >
+          <Left>
+            <Button
+              transparent
+              onPress={() => goTo(this.navigation, 'Cycle')}
+            >
+              <Icon name="arrow-back" stlye={{ color: white }} />
+            </Button>
+          </Left>
+          <Body />
+        </Header>
         <Content padder contentContainerStyle={styles.content}>
           <CText
             text="Crie ou altere a cerveja deste ciclo"
@@ -174,6 +192,10 @@ export default class NewBeer extends Component {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: dark,
+    elevation: 0
+  },
   content: {
     flex: 1,
     justifyContent: 'center',

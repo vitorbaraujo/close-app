@@ -14,7 +14,7 @@ import { get } from '../../utils/Api';
 import { goTo } from '../../utils/NavigationUtils';
 import { getDuration } from '../../utils/CycleUtils';
 import { formatted } from '../../utils/DateUtils';
-import { white, dark } from '../../utils/Colors'
+import { white, dark, darker } from '../../utils/Colors'
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -66,8 +66,6 @@ export default class Cycle extends React.Component {
 
           let parsedLogs = Object.values(curLogs).sort((a, b) => b.id - a.id)
 
-          console.log('parsed logs', parsedLogs);
-
           this.setState({
             cycle: {
               ...cycle,
@@ -110,7 +108,10 @@ export default class Cycle extends React.Component {
 
     return (
       <Container>
-        <Header style={styles.header}>
+          <Header
+              androidStatusBarColor={darker}
+              style={styles.header}
+          >
           <Left>
             <Button
               transparent

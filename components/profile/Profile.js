@@ -17,7 +17,7 @@ import { removeToken, getItem } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
 import CText from '../commons/CText';
 import gravatar from 'gravatar';
-import { white, dark, orange } from '../../utils/Colors';
+import { white, dark, darker, orange } from '../../utils/Colors';
 
 export default class Profile extends React.Component {
   static navigationOptions = {
@@ -83,7 +83,10 @@ export default class Profile extends React.Component {
 
     return (
       <Container>
-        <Header style={styles.header}>
+        <Header
+          androidStatusBarColor={darker}
+          style={styles.header}
+        >
           <Left>
             <Button
               transparent
