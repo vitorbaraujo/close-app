@@ -110,7 +110,16 @@ export default class Homepage extends React.Component {
           onPress={() => goTo(this.navigation, 'Cycle', { cycle, beer: cycle.beer })}
         >
           <Body>
-            <CText text={`${cycle.beer.name} (${cycle.beer.type_name})`} />
+            {
+              cycle.beer ?
+              <CText text={`${cycle.beer.name} (${cycle.beer.type_name})`} />
+              :
+              (
+                cycle.end_time === null ?
+                <CText text="Ciclo em andamento" style={{ textDecorationLine: 'underline' }} />
+                : null
+              )
+            }
           </Body>
         </CardItem>
         <CardItem

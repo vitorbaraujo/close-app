@@ -10,15 +10,19 @@ export default class CycleStats extends React.Component {
 
   render() {
     let { cycle } = this.props;
-    let revenue = cycle.beer_count * cycle.beer.price
+    let revenue = cycle.beer && cycle.beer.price ? cycle.beer_count * cycle.beer.price : null;
 
     return (
       <Container>
         <Content padder>
-          <CText
-            text={`Retorno esperado: R$ ${revenue.toFixed(2)}`}
-            style={{ textAlign: 'center' }}
-          />
+          {
+            revenue !== null ?
+            <CText
+              text={`Retorno esperado: R$ ${revenue.toFixed(2)}`}
+              style={{ textAlign: 'center' }}
+            />
+            : null
+          }
           {
             cycle.logs.length ?
               (<PieCycleChart data={cycle} />) :

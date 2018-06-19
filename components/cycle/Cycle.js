@@ -49,7 +49,7 @@ export default class Cycle extends React.Component {
       this.setState({
         cycle: {
           ...this.props.cycle,
-          beerId: beer.id,
+          beerId: beer ? beer.id : null,
           beer: beer,
         }
       })
@@ -106,6 +106,8 @@ export default class Cycle extends React.Component {
   render() {
     let { cycle } = this.state;
 
+    let beerCount = Math.max(cycle.beer_count, cycle.logs.filter(l => l.code === 2).length)
+
     return (
       <Container>
           <Header
@@ -139,17 +141,22 @@ export default class Cycle extends React.Component {
             <PTRView onRefresh={this._refresh} style={{ flex: 1 }}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
                 <CText
-                  text={cycle.beer_count}
+                  text={beerCount}
                   style={{ color: white, fontSize: 60 }}
                   />
                 <CText
-                  text={`garrafa${cycle.beer_count !== 1 ? 's' : ''} fechada${cycle.beer_count !== 1 ? 's' : ''} nesse ciclo`}
+                  text={`garrafa${beerCount !== 1 ? 's' : ''} fechada${beerCount !== 1 ? 's' : ''} nesse ciclo`}
                   style={{ color: white }}
+                />
+
+                {
+                  cycle.beer ?
+                  <CText
+                    text={`${cycle.beer.name} (${cycle.beer.type_name})`}
+                    style={{ color: white }}
                   />
-                <CText
-                  text={`${cycle.beer.name} (${cycle.beer.type_name})`}
-                  style={{ color: white }}
-                  />
+                  : null
+                }
               </View>
             </PTRView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
