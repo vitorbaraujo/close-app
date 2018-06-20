@@ -9,13 +9,9 @@ import {
   Form,
   Item,
   Input,
-  Label,
   Button,
   Text,
-  Header,
-  Left,
   Icon,
-  Body,
   Spinner,
 } from 'native-base';
 import { ZeroMQ } from 'react-native-zeromq';
@@ -23,6 +19,7 @@ import { goTo } from '../utils/NavigationUtils';
 import { login, get } from '../utils/Api';
 import { saveItem, getItem, removeItem, isSignedIn, getToken, removeToken } from '../utils/TokenUtils';
 import CText from './commons/CText';
+import OfflineSign from './commons/OfflineSign';
 import { light, lighter, dark, red, grey, white } from '../utils/Colors'
 
 export default class SendRasp extends React.Component {
@@ -216,6 +213,7 @@ export default class SendRasp extends React.Component {
 
     return (
       <Container style={styles.container}>
+        <OfflineSign />
         <Content padder contentContainerStyle={styles.content}>
           <View>
             <CText
