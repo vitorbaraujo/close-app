@@ -12,15 +12,17 @@ export default class CycleHistory extends React.Component {
   _keyExtractor = (item, index) => index.toString();
 
   _renderItem = (obj) => {
-    let { item } = obj;
-    return <Log log={item} />
+    let { item, index } = obj;
+    let isLast = index === this.props.logs.length - 1;
+
+    return <Log log={item} last={isLast} />
   }
 
   render() {
     let { logs } = this.props;
 
     return (
-      <Container style={{ padding: 10 }}>
+      <Container style={{ padding: 10, marginTop: 10 }}>
         {
           logs.length ?
           (

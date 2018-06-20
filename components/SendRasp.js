@@ -207,7 +207,7 @@ export default class SendRasp extends React.Component {
   }
 
   render() {
-    let { form, formNew, loading, logging, savedUsername, savedToken, logged } = this.state
+    let { form, formNew, loading, logging, savedUsername, sent, logged } = this.state
     let { ssid, ssidPassword, username, password } = this.state;
 
     let disabled = !ssid.length || !ssidPassword.length || !username.length || !password.length;
@@ -215,7 +215,7 @@ export default class SendRasp extends React.Component {
 
     return (
       <Container style={styles.container}>
-        <OfflineSign />
+        { sent && <OfflineSign />}
         <Content padder contentContainerStyle={styles.content}>
           <View>
             <Thumbnail
@@ -287,7 +287,7 @@ export default class SendRasp extends React.Component {
                       style={ !loggedDisabled ? styles.loggedButton : { marginTop: 20 } }
                       onPress={() => this._sendInfo()}
                     >
-                      <CText text={`Entre como ${this.state.savedUsername}`} />
+                      <CText text={`Entre como ${savedUsername}`} />
                     </Button>
 
                     {
