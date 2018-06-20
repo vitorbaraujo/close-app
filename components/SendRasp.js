@@ -13,6 +13,7 @@ import {
   Text,
   Icon,
   Spinner,
+  Thumbnail,
 } from 'native-base';
 import { ZeroMQ } from 'react-native-zeromq';
 import { goTo } from '../utils/NavigationUtils';
@@ -21,6 +22,7 @@ import { saveItem, getItem, removeItem, isSignedIn, getToken, removeToken } from
 import CText from './commons/CText';
 import OfflineSign from './commons/OfflineSign';
 import { light, lighter, dark, red, grey, white } from '../utils/Colors'
+var logo = require('../assets/images/logo.png')
 
 export default class SendRasp extends React.Component {
   static navigationOptions = {
@@ -216,6 +218,11 @@ export default class SendRasp extends React.Component {
         <OfflineSign />
         <Content padder contentContainerStyle={styles.content}>
           <View>
+            <Thumbnail
+              large
+              style={{ alignSelf: 'center' }}
+              source={logo}
+            />
             <CText
               text="Sincronize com a máquina"
               style={styles.welcomeText}

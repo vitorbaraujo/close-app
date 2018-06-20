@@ -13,12 +13,15 @@ import {
   Button,
   Icon,
   Spinner,
+  Thumbnail,
 } from 'native-base'
 import { saveToken, saveItem } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
 import { register, login, get } from '../../utils/Api';
 import CText from '../commons/CText';
+import OfflineSign from '../commons/OfflineSign';
 import { light, lighter, red, grey, medium, white } from '../../utils/Colors'
+var logo = require('../../assets/images/logo.png')
 
 export default class Register extends Component {
   static navigationOptions = {
@@ -104,8 +107,14 @@ export default class Register extends Component {
 
     return (
       <Container>
+        <OfflineSign />
         <Content padder contentContainerStyle={styles.content}>
           <View>
+            <Thumbnail
+              large
+              style={{ alignSelf: 'center' }}
+              source={logo}
+            />
             <CText
               text="Registre-se"
               style={styles.welcomeText}

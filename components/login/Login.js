@@ -19,6 +19,7 @@ import { goTo } from '../../utils/NavigationUtils';
 import { saveItem, getItem } from '../../utils/TokenUtils';
 import { login, get } from '../../utils/Api';
 import CText from '../commons/CText';
+import OfflineSign from '../commons/OfflineSign';
 import { light, lighter, red, grey, medium, white } from '../../utils/Colors'
 var logo = require('../../assets/images/logo.png')
 
@@ -79,6 +80,7 @@ export default class Cycle extends React.Component {
 
     return (
       <Container style={styles.container}>
+        <OfflineSign />
         <Content padder contentContainerStyle={styles.content}>
           <View>
             <Thumbnail
