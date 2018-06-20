@@ -142,12 +142,13 @@ export default class Register extends Component {
 
             <Button
               full
+              rounded
               disabled={disabled}
               style={!disabled ? styles.formButton : { marginTop: 50 }}
               onPress={() => this._register()}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <CText text={loading ? 'Registrando...' : 'Registrar'} />
+                <CText text={loading ? 'REGISTRANDO...' : 'REGISTRAR'} />
                 {loading && <Spinner size="small" color={white} />}
               </View>
             </Button>

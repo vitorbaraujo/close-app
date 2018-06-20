@@ -117,6 +117,7 @@ export default class NewBeer extends Component {
             style={styles.newBeer}
           />
           <Button
+            rounded
             style={{ backgroundColor: light, paddingLeft: 20, paddingRight: 20, alignSelf: 'center', marginTop: 20 }}
             onPress={() =>
               ActionSheet.show(
@@ -174,6 +175,7 @@ export default class NewBeer extends Component {
 
           <Button
             full
+            rounded
             disabled={disabled}
             style={!disabled ? styles.formButton : { marginTop: 50 }}
             onPress={() => this._updateCycle()}

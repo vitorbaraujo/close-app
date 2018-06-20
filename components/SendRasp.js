@@ -21,7 +21,7 @@ import { login, get } from '../utils/Api';
 import { saveItem, getItem, removeItem, isSignedIn, getToken, removeToken } from '../utils/TokenUtils';
 import CText from './commons/CText';
 import OfflineSign from './commons/OfflineSign';
-import { light, lighter, dark, red, grey, white } from '../utils/Colors'
+import { light, lighter, dark, red, grey, white, green } from '../utils/Colors'
 var logo = require('../assets/images/logo.png')
 
 export default class SendRasp extends React.Component {
@@ -45,10 +45,10 @@ export default class SendRasp extends React.Component {
       socket: null,
       sent: false,
       loading: false,
-      logging: false,
-      savedUsername: '',
-      savedToken: '',
-      logged: false,
+      // savedUsername: '',
+      // savedToken: '',
+      // logged: false,
+      readyToProceed: false,
       form: [
         { label: 'Nome da rede', field: 'ssid', password: false },
         { label: 'Senha da rede', field: 'ssidPassword', password: true, passField: 'showSsidPassword' },
@@ -62,19 +62,19 @@ export default class SendRasp extends React.Component {
     this.navigation = props.navigation;
   }
 
-  async componentDidMount() {
-    try {
-      let savedUsername = await getItem('username');
-      let savedToken = await getToken()
-      this.setState({
-        savedUsername,
-        savedToken,
-        logged: savedUsername && !!savedUsername.length && savedToken && !!savedToken.length,
-      });
-    } catch(error) {
-      console.log('error on get username token');
-    }
-  }
+  // async componentDidMount() {
+  //   try {
+  //     let savedUsername = await getItem('username');
+  //     let savedToken = await getToken()
+  //     this.setState({
+  //       savedUsername,
+  //       savedToken,
+  //       // logged: savedUsername && !!savedUsername.length && savedToken && !!savedToken.length,
+  //     });
+  //   } catch(error) {
+  //     console.log('error on get username token');
+  //   }
+  // }
 
   async _createSocket() {
     try {
@@ -100,6 +100,8 @@ export default class SendRasp extends React.Component {
   }
 
   async _sendInfo() {
+    this.setState({ loading: true })
+
     let message = JSON.stringify({
       ssid: this.state.ssid,
       ssid_password: this.state.ssidPassword,
@@ -107,25 +109,25 @@ export default class SendRasp extends React.Component {
       password: this.state.password,
     })
 
-    let messageLogged = JSON.stringify({
-      ssid: this.state.ssid,
-      ssid_password: this.state.ssidPassword,
-      token: this.state.savedToken,
-    })
+    // let messageLogged = JSON.stringify({
+    //   ssid: this.state.ssid,
+    //   ssid_password: this.state.ssidPassword,
+    //   token: this.state.savedToken,
+    // })
 
-    console.log(this.state.logged, messageLogged);
+    // console.log(this.state.logged, messageLogged);
 
-    this.setState({ loading: true })
     await this._createSocket();
 
     if (this.state.connected) {
       try {
-        let msgToSend = this.state.logged ? messageLogged : message;
+        // let msgToSend = this.state.logged ? messageLogged : message;
+        let msgToSend = message;
         let response = await this.state.socket.send(msgToSend);
 
         if (response) {
           await saveItem('rasp_sent', 'true');
-          this.setState({ sent: true, logging: true });
+          this.setState({ sent: true });
         } else {
           console.log('no response')
         }
@@ -135,46 +137,18 @@ export default class SendRasp extends React.Component {
 
     } else {
       console.log('not connected');
-      this.setState({ loading: false, logging: false })
+      this.setState({ loading: false })
     }
+
 
     if (this.state.sent) {
-      let loginResult = await this._login();
-
-      if (loginResult === false) {
-        console.log('login result', loginResult)
-        this.setState({ logging: false, error: 'Usuário e/ou senha inválido(s)' })
-      }
+      setTimeout(() => {
+        this.setState({ readyToProceed: true, loading: false });
+      }, 1500)
     }
   }
 
-  async _login() {
-    try {
-      if (this.state.logged) {
-        goTo(this.navigation, 'SignedIn')
-      } else {
-        let result = await login({
-          username: this.state.username,
-          password: this.state.password,
-        })
-
-        if (result) {
-          this.setState({ signedIn: true })
-
-          let me = await get('users/me/');
-          await saveItem('username', me.username);
-
-          goTo(this.navigation, 'SignedIn')
-        } else {
-          return false;
-        }
-      }
-    } catch (error) {
-      console.log('[send rasp screen] error log in', error)
-    }
-  }
-
-  async _skip() {
+  async _proceed() {
     try {
       let signed = await isSignedIn();
 
@@ -184,7 +158,7 @@ export default class SendRasp extends React.Component {
         goTo(this.navigation, 'SignedOut')
       }
     } catch(error) {
-      console.log('error on skip', error)
+      console.log('error on proceed', error)
     }
   }
 
@@ -192,26 +166,26 @@ export default class SendRasp extends React.Component {
     this.setState({ [label]: text })
   }
 
-  async _logAsOtherUser() {
-    try {
-      await removeItem('username');
-      await removeToken();
-      this.setState({
-        savedUsername: null,
-        savedToken: null,
-        logged: false,
-      })
-    } catch(error) {
-      console.log('error on remove username and token from asyncstorage')
-    }
-  }
+  // async _logAsOtherUser() {
+  //   try {
+  //     await removeItem('username');
+  //     await removeToken();
+  //     this.setState({
+  //       savedUsername: null,
+  //       savedToken: null,
+  //       // logged: false,
+  //     })
+  //   } catch(error) {
+  //     console.log('error on remove username and token from asyncstorage')
+  //   }
+  // }
 
   render() {
-    let { form, formNew, loading, logging, savedUsername, sent, logged } = this.state
+    let { form, formNew, loading, readyToProceed, sent } = this.state
     let { ssid, ssidPassword, username, password } = this.state;
 
     let disabled = !ssid.length || !ssidPassword.length || !username.length || !password.length;
-    let loggedDisabled = !ssid.length || !ssidPassword.length;
+    // let loggedDisabled = !ssid.length || !ssidPassword.length;
 
     return (
       <Container style={styles.container}>
@@ -234,105 +208,127 @@ export default class SendRasp extends React.Component {
             />
 
             <CText
-              text="e seu usuário e senha para entrar na aplicação"
+              text="e seu usuário e senha para sincronizar com a máquina"
               style={{ color: light, textAlign: 'center' }}
             />
-            <Form>
-              {form.map((f, i) =>
-                <Item key={i}>
-                  <Input
-                    placeholder={f.label}
-                    style={styles.font}
-                    secureTextEntry={f.password && !this.state[f.passField]}
-                    onChangeText={(text) => this._updateText(f.field, text)}
-                  />
-                  {f.password &&
-                    <Icon
-                      type="Entypo"
-                      name={!this.state[f.passField] ? 'eye' : 'eye-with-line'}
-                      onPress={() => this.setState({ [f.passField]: !this.state[f.passField] })}
-                      style={{ color: grey }}
-                    />
-                  }
-                </Item>
-              )}
-              {
-                !logged ?
-                formNew.map((f, i) =>
-                  <Item key={i}>
-                    <Input
-                      placeholder={f.label}
-                      style={styles.font}
-                      secureTextEntry={f.password && !this.state[f.passField]}
-                      onChangeText={(text) => this._updateText(f.field, text)}
-                    />
-                    {f.password &&
-                      <Icon
-                        type="Entypo"
-                        name={!this.state[f.passField] ? 'eye' : 'eye-with-line'}
-                        onPress={() => this.setState({ [f.passField]: !this.state[f.passField] })}
-                        style={{ color: grey }}
+
+            { !readyToProceed ?
+              (
+                <Form>
+                  {form.map((f, i) =>
+                    <Item key={i}>
+                      <Input
+                        placeholder={f.label}
+                        style={styles.font}
+                        secureTextEntry={f.password && !this.state[f.passField]}
+                        onChangeText={(text) => this._updateText(f.field, text)}
                       />
-                    }
-                  </Item>
-                )
-                :
-                (
-                  <View>
-                    <Button
-                      full
-                      rounded
-                      small
-                      disabled={loggedDisabled}
-                      style={ !loggedDisabled ? styles.loggedButton : { marginTop: 20 } }
-                      onPress={() => this._sendInfo()}
-                    >
-                      <CText text={`Entre como ${savedUsername}`} />
-                    </Button>
-
-                    {
-                      <Button
-                        transparent
-                        onPress={() => this._logAsOtherUser()}
-                        style={{ alignSelf: 'center' }}
-                      >
-                          <CText
-                            text="Entrar como outro usuário"
-                            style={{ color: grey, textDecorationLine: 'underline' }}
+                      {f.password &&
+                        <Icon
+                          type="Entypo"
+                          name={!this.state[f.passField] ? 'eye' : 'eye-with-line'}
+                          onPress={() => this.setState({ [f.passField]: !this.state[f.passField] })}
+                          style={{ color: grey }}
+                        />
+                      }
+                    </Item>
+                  )}
+                  {
+                    // !logged ?
+                    formNew.map((f, i) =>
+                      <Item key={i}>
+                        <Input
+                          placeholder={f.label}
+                          style={styles.font}
+                          secureTextEntry={f.password && !this.state[f.passField]}
+                          onChangeText={(text) => this._updateText(f.field, text)}
+                        />
+                        {f.password &&
+                          <Icon
+                            type="Entypo"
+                            name={!this.state[f.passField] ? 'eye' : 'eye-with-line'}
+                            onPress={() => this.setState({ [f.passField]: !this.state[f.passField] })}
+                            style={{ color: grey }}
                           />
-                      </Button>
-                    }
-                  </View>
-                )
-              }
-            </Form>
+                        }
+                      </Item>
+                    )
+                    // :
+                    // ( !readyToProceed &&
+                    //   <View>
+                    //     <Button
+                    //       full
+                    //       rounded
+                    //       disabled={loggedDisabled}
+                    //       style={ !loggedDisabled ? styles.loggedButton : { marginTop: 20 } }
+                    //       onPress={() => this._sendInfo()}
+                    //     >
+                    //       <CText text={`Enviar como ${savedUsername}`} />
+                    //     </Button>
 
-            { !logged &&
+                    //     {
+                    //       <Button
+                    //         transparent
+                    //         onPress={() => this._logAsOtherUser()}
+                    //         style={{ alignSelf: 'center' }}
+                    //       >
+                    //           <CText
+                    //             text="Enviar como outro usuário"
+                    //             style={{ color: grey, textDecorationLine: 'underline' }}
+                    //           />
+                    //       </Button>
+                    //     }
+                    //   </View>
+                    // )
+                  }
+                </Form>
+              ) : null
+            }
+
+            {/* {(!logged && !readyToProceed) && */}
+            { !readyToProceed &&
                <Button
                 full
+                rounded
                 disabled={disabled}
                 style={!disabled ? styles.formButton : { marginTop: 50 }}
                 onPress={() => this._sendInfo()}
               >
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                  <CText text={loading ? 'Enviando...' : (logging ? 'Entrando...' : 'Enviar') } />
-                  { (loading || logging) && <Spinner size="small" color={white}/>}
+                  <CText bold text={loading ? 'ENVIANDO...' : 'ENVIAR'} />
+                  { loading && <Spinner size="small" color={white}/>}
                 </View>
               </Button>
             }
 
-            <Button
-              transparent
-              full
-              style={{ marginTop: 25 }}
-              onPress={() => this._skip()}
-            >
-              <CText
-                bold
-                text="PULAR"
-                style={{ color: grey }}
-              />
-            </Button>
+            {
+              readyToProceed &&
+              <Button
+                full
+                rounded
+                style={{ backgroundColor: green, marginTop: 50 }}
+                onPress={() => this._proceed()}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                  <CText text="PROSSEGUIR" />
+                </View>
+              </Button>
+            }
+
+            { !readyToProceed &&
+              <Button
+                transparent
+                full
+                style={{ marginTop: 25 }}
+                onPress={() => this._proceed()}
+              >
+                <CText
+                  bold
+                  text="PULAR"
+                  style={{ color: grey }}
+                />
+              </Button>
+            }
 
             <Text style={{ color: red, alignSelf: 'center' }}>
               {this.state.error}

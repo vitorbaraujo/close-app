@@ -135,6 +135,7 @@ export default class Profile extends React.Component {
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 20 }}>
             <Button
+              rounded
               style={{ backgroundColor: orange }}
               onPress={() => this._doLogout()}
             >

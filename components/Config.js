@@ -69,6 +69,7 @@ export default class Config extends Component {
         <Content padder contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Button
             full
+            rounded
             style={{ backgroundColor: light, marginBottom: 20 }}
             onPress={() => this._removeRaspConfig()}
           >
