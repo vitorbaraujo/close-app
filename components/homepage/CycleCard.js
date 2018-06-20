@@ -3,7 +3,7 @@ import { Card, CardItem, Body, Right, Badge } from 'native-base'
 import CText from '../commons/CText';
 import { getDuration } from '../../utils/CycleUtils';
 import { humanize, formatted } from '../../utils/DateUtils';
-import { white } from '../../utils/Colors';
+import { white, grey } from '../../utils/Colors';
 import { goTo } from '../../utils/NavigationUtils';
 
 import moment from 'moment';
