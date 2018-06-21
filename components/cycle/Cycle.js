@@ -193,7 +193,7 @@ export default class Cycle extends React.Component {
               initialPage={0}
             >
               <Tab
-                heading="Eventos"
+                heading={`Eventos (${cycle.logs.length})`}
                 tabStyle={styles.tab}
                 activeTabStyle={styles.tab}
                 textStyle={styles.tabText}

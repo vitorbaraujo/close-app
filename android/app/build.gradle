@@ -107,7 +107,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 def userVer = getNpmVersion()
-def googleVer = getGitVersion()
+def googleVer = 18
 
 android {
     compileSdkVersion 23
