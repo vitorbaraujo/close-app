@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import {
   Container, Button, Header,
   Body, Left, Icon,
-  Tabs, Tab, Content, Right
+  Tabs, Tab, Content, Right, Badge
 } from 'native-base';
 import moment from 'moment';
 import PTRView from 'react-native-pull-to-refresh';
@@ -14,7 +14,7 @@ import { get } from '../../utils/Api';
 import { goTo } from '../../utils/NavigationUtils';
 import { getDuration } from '../../utils/CycleUtils';
 import { formatted } from '../../utils/DateUtils';
-import { white, dark } from '../../utils/Colors'
+import { white, dark, darker } from '../../utils/Colors'
 
 export default class Cycle extends React.Component {
   static navigationOptions = {
@@ -49,7 +49,7 @@ export default class Cycle extends React.Component {
       this.setState({
         cycle: {
           ...this.props.cycle,
-          beerId: beer.id,
+          beerId: beer ? beer.id : null,
           beer: beer,
         }
       })
@@ -65,8 +65,6 @@ export default class Cycle extends React.Component {
           logs.forEach(l => curLogs[l.id] = l)
 
           let parsedLogs = Object.values(curLogs).sort((a, b) => b.id - a.id)
-
-          console.log('parsed logs', parsedLogs);
 
           this.setState({
             cycle: {
@@ -108,9 +106,14 @@ export default class Cycle extends React.Component {
   render() {
     let { cycle } = this.state;
 
+    let beerCount = Math.max(cycle.beer_count, cycle.logs.filter(l => l.code === 2).length)
+
     return (
       <Container>
-        <Header style={styles.header}>
+          <Header
+              androidStatusBarColor={darker}
+              style={styles.header}
+          >
           <Left>
             <Button
               transparent
@@ -138,17 +141,31 @@ export default class Cycle extends React.Component {
             <PTRView onRefresh={this._refresh} style={{ flex: 1 }}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
                 <CText
-                  text={cycle.beer_count}
+                  text={beerCount}
                   style={{ color: white, fontSize: 60 }}
                   />
                 <CText
-                  text={`garrafa${cycle.beer_count !== 1 ? 's' : ''} fechada${cycle.beer_count !== 1 ? 's' : ''} nesse ciclo`}
+                  text={`garrafa${beerCount !== 1 ? 's' : ''} fechada${beerCount !== 1 ? 's' : ''} nesse ciclo`}
                   style={{ color: white }}
+                />
+
+                {
+                  cycle.beer ?
+                  <CText
+                    text={`${cycle.beer.name} (${cycle.beer.type_name})`}
+                    style={{ color: white }}
                   />
-                <CText
-                  text={`${cycle.beer.name} (${cycle.beer.type_name})`}
-                  style={{ color: white }}
+                  : null
+                }
+                <Badge
+                  success={cycle.end_time === null}
+                  style={{ alignSelf: 'center', marginTop: 10 }}
+                >
+                  <CText
+                    text={cycle.end_time ? 'Finalizado' : 'Em andamento'}
+                    style={{ color: white }}
                   />
+                </Badge>
               </View>
             </PTRView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -207,13 +224,13 @@ const styles = StyleSheet.create({
     elevation: 0
   },
   main: {
-    flex: 1,
+    flex: 2,
     backgroundColor: dark,
     paddingLeft: 20,
     paddingRight: 20,
   },
   tabs: {
-    flex: 2,
+    flex: 3,
     backgroundColor: white,
   },
   tab: {

@@ -1,27 +1,13 @@
 import React from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
-import {
-  Container,
-  Icon,
-  Button,
-  Header,
-  Body,
-  Left,
-  Right,
-  Card,
-  CardItem,
-  Content,
-  Spinner,
-} from 'native-base';
-import moment from 'moment';
+import { Container, Content, Icon, Button, Header, Body, Left, Right, Spinner } from 'native-base';
 import PTRView from 'react-native-pull-to-refresh';
 import CText from '../commons/CText';
 import CycleChart from '../charts/CycleChart';
 import { get } from '../../utils/Api';
 import { goTo } from '../../utils/NavigationUtils';
-import { getDuration } from '../../utils/CycleUtils';
-import { humanize, formatted } from '../../utils/DateUtils';
-import { dark, light, white, green, lighter, medium } from '../../utils/Colors';
+import { dark, darker, light, white, green, lighter } from '../../utils/Colors';
+import CycleCard from './CycleCard';
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
@@ -72,11 +58,13 @@ export default class Homepage extends React.Component {
       let beers = await get('users/me/beers/');
       let cycles = await get('users/me/cycles/');
 
-      cycles = cycles.map(c => ({
+      cycles = cycles.map(c => {
+        return {
         ...c,
         beerId: c.beer,
         beer: beers.find(b => b.id === c.beer)
-      }))
+      }
+      })
 
       this.setState({ beers, cycles, currentUser: user });
 
@@ -99,42 +87,7 @@ export default class Homepage extends React.Component {
 
   _renderItem = ({ item }) => {
     let cycle = item || {};
-
-    return (
-      <Card>
-        <CardItem
-          header
-          button
-          onPress={() => goTo(this.navigation, 'Cycle', { cycle, beer: cycle.beer })}
-        >
-          <Body>
-            <CText text={`${cycle.beer.name} (${cycle.beer.type_name})`} />
-          </Body>
-        </CardItem>
-        <CardItem
-          style={{ paddingTop: 0 }}
-          button
-          onPress={() => goTo(this.navigation, 'Cycle', { cycle })}
-        >
-          <Body>
-            <CText
-              subtitle
-              text={`${getDuration(cycle)}${getDuration(cycle) ? ' de duração' : ''}`}
-            />
-            <CText
-              text={`${cycle.beer_count} garrafa${cycle.beer_count == 1 ? '' : 's'}`}
-            />
-          </Body>
-          <Right>
-            <CText text={formatted(moment(cycle.start_time))} />
-            <CText
-              subsubtitle
-              text={humanize(moment(cycle.start_time).toDate())}
-            />
-          </Right>
-        </CardItem>
-      </Card>
-    );
+    return <CycleCard cycle={cycle} navigation={this.navigation} />
   }
 
   render() {
@@ -170,6 +123,7 @@ export default class Homepage extends React.Component {
             </Button>
           }
           <Header
+            androidStatusBarColor={darker}
             noShadow={true}
             style={styles.header}
           >

@@ -10,5 +10,6 @@ export function getLog(code) {
     case 7: return 'Código 7';
     case 8: return 'Código 8';
     case 9: return 'Código 9';
+    default: return 'Código inválido';
   }
 }

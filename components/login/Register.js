@@ -13,12 +13,15 @@ import {
   Button,
   Icon,
   Spinner,
+  Thumbnail,
 } from 'native-base'
-import { saveToken } from '../../utils/TokenUtils';
+import { saveToken, saveItem } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
-import { register, login } from '../../utils/Api';
+import { register, login, get } from '../../utils/Api';
 import CText from '../commons/CText';
+import OfflineSign from '../commons/OfflineSign';
 import { light, lighter, red, grey, medium, white } from '../../utils/Colors'
+var logo = require('../../assets/images/logo.png')
 
 export default class Register extends Component {
   static navigationOptions = {
@@ -80,6 +83,9 @@ export default class Register extends Component {
 
       if (result) {
         this.setState({ signedIn: true })
+        let me = await get('users/me/')
+        await saveItem('username', me.username);
+
         goTo(this.navigation, 'SignedIn')
       } else {
         this.setState({ error: 'Alguma coisa deu errado' })
@@ -95,20 +101,29 @@ export default class Register extends Component {
 
   render() {
     let { form, showPassword, loading } = this.state
+    let { username, password, firstName, lastName, email } = this.state;
+
+    let disabled = !username.length || !password.length || !firstName.length || !lastName.length || !email.length;
 
     return (
       <Container>
+        <OfflineSign />
         <Content padder contentContainerStyle={styles.content}>
           <View>
+            <Thumbnail
+              large
+              style={{ alignSelf: 'center' }}
+              source={logo}
+            />
             <CText
               text="Registre-se"
               style={styles.welcomeText}
             />
             <Form>
               {form.map((f, i) =>
-                <Item key={i} floatingLabel>
-                  <Label style={styles.font}>{f.label}</Label>
+                <Item key={i}>
                   <Input
+                    placeholder={f.label}
                     style={styles.font}
                     secureTextEntry={f.field === 'password' && !showPassword}
                     onChangeText={(text) => this._updateText(f.field, text)}
@@ -127,11 +142,13 @@ export default class Register extends Component {
 
             <Button
               full
-              style={styles.formButton}
+              rounded
+              disabled={disabled}
+              style={!disabled ? styles.formButton : { marginTop: 50 }}
               onPress={() => this._register()}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <CText text={loading ? 'Registrando...' : 'Registrar'} />
+                <CText text={loading ? 'REGISTRANDO...' : 'REGISTRAR'} />
                 {loading && <Spinner size="small" color={white} />}
               </View>
             </Button>

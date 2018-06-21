@@ -4,7 +4,7 @@ import { Container, Content, Button, Header, Left, Body, Icon, View } from 'nati
 import CText from './commons/CText'
 import { removeItem, getItem } from '../utils/TokenUtils'
 import { goTo } from '../utils/NavigationUtils'
-import { dark, white, light, grey, green } from '../utils/Colors'
+import { dark, darker, white, light, grey, green } from '../utils/Colors'
 
 export default class Config extends Component {
   static navigationOptions = {
@@ -52,7 +52,10 @@ export default class Config extends Component {
 
     return (
       <Container>
-        <Header style={styles.header}>
+        <Header
+          androidStatusBarColor={darker}
+          style={styles.header}
+        >
           <Left>
             <Button
               transparent
@@ -66,6 +69,7 @@ export default class Config extends Component {
         <Content padder contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Button
             full
+            rounded
             style={{ backgroundColor: light, marginBottom: 20 }}
             onPress={() => this._removeRaspConfig()}
           >

@@ -1,7 +1,8 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { VictoryChart, VictoryBar, VictoryAxis, VictoryLabel } from "victory-native";
-import { light, lighter, white } from '../../utils/Colors'
+import { lighter, white } from '../../utils/Colors'
+
 
 export default class App extends React.Component {
   render() {

@@ -13,11 +13,11 @@ import {
   Label,
   Thumbnail,
 } from 'native-base';
-import { removeToken, getItem } from '../../utils/TokenUtils';
+import { removeToken, getItem, removeItem } from '../../utils/TokenUtils';
 import { goTo } from '../../utils/NavigationUtils';
 import CText from '../commons/CText';
 import gravatar from 'gravatar';
-import { white, dark, orange } from '../../utils/Colors';
+import { white, dark, darker, orange } from '../../utils/Colors';
 
 export default class Profile extends React.Component {
   static navigationOptions = {
@@ -60,6 +60,7 @@ export default class Profile extends React.Component {
       }
 
       let sent = await getItem('rasp_sent');
+      await removeItem('username');
 
       if (sent === 'true') {
         goTo(this.navigation, 'SignedOut')
@@ -83,7 +84,10 @@ export default class Profile extends React.Component {
 
     return (
       <Container>
-        <Header style={styles.header}>
+        <Header
+          androidStatusBarColor={darker}
+          style={styles.header}
+        >
           <Left>
             <Button
               transparent
@@ -131,6 +135,7 @@ export default class Profile extends React.Component {
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 20 }}>
             <Button
+              rounded
               style={{ backgroundColor: orange }}
               onPress={() => this._doLogout()}
             >

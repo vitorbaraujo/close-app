@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
-import { Container, Content, Form, Label, Input, Item, Button, View, Spinner, ActionSheet } from 'native-base'
-import { light, white, lighter, grey, green } from '../../utils/Colors'
+import { Container, Content, Form, Label, Input, Item, Button, View, Spinner, ActionSheet, Header, Left, Body, Icon } from 'native-base'
+import { light, white, lighter, grey, green, darker, dark } from '../../utils/Colors'
 import { get } from '../../utils/Api'
 import CText from '../commons/CText'
+import { goTo } from '../../utils/NavigationUtils';
 
 export default class NewBeer extends Component {
   static navigationOptions = {
@@ -29,6 +30,8 @@ export default class NewBeer extends Component {
       selected1: "key1",
       beers: [],
     }
+
+    this.navigation = this.props.navigation;
   }
 
   async componentDidMount() {
@@ -81,6 +84,7 @@ export default class NewBeer extends Component {
 
   render() {
     let { form, beers, beerId, loading, msg } = this.state;
+    let { beerName, beerType, beerPrice } = this.state;
 
     let buttons = beers.map(b => ({ label: `${b.name} (${b.type_name})`, id: b.id }));
     buttons.push({ label: 'Cancelar', id: -1 });
@@ -88,14 +92,32 @@ export default class NewBeer extends Component {
 
     let curBeer = beers.find(b => b.id === beerId);
 
+    let disabled = beerId === null && (!beerName.length || !beerType.length || !beerPrice.length);
+
     return (
       <Container>
+        <Header
+          androidStatusBarColor={darker}
+          noShadow={true}
+          style={styles.header}
+        >
+          <Left>
+            <Button
+              transparent
+              onPress={() => goTo(this.navigation, 'Cycle')}
+            >
+              <Icon name="arrow-back" stlye={{ color: white }} />
+            </Button>
+          </Left>
+          <Body />
+        </Header>
         <Content padder contentContainerStyle={styles.content}>
           <CText
             text="Crie ou altere a cerveja deste ciclo"
             style={styles.newBeer}
           />
           <Button
+            rounded
             style={{ backgroundColor: light, paddingLeft: 20, paddingRight: 20, alignSelf: 'center', marginTop: 20 }}
             onPress={() =>
               ActionSheet.show(
@@ -139,9 +161,9 @@ export default class NewBeer extends Component {
 
           <Form>
             {form.map((f, i) =>
-              <Item key={i} floatingLabel>
-                <Label style={styles.font}>{f.label}</Label>
+              <Item key={i}>
                 <Input
+                  placeholder={f.label}
                   value={this.state[f.field]}
                   style={styles.font}
                   keyboardType={f.type === 'number' ? 'numeric' : 'default'}
@@ -152,8 +174,10 @@ export default class NewBeer extends Component {
           </Form>
 
           <Button
-            style={styles.formButton}
             full
+            rounded
+            disabled={disabled}
+            style={!disabled ? styles.formButton : { marginTop: 50 }}
             onPress={() => this._updateCycle()}
           >
             <CText
@@ -174,6 +198,10 @@ export default class NewBeer extends Component {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: dark,
+    elevation: 0
+  },
   content: {
     flex: 1,
     justifyContent: 'center',
