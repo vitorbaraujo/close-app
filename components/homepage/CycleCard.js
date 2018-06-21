@@ -12,6 +12,8 @@ export default class CycleCard extends Component {
   render() {
     let { cycle, navigation } = this.props;
 
+    let beerCount = Math.max(cycle.beer_count, cycle.logs.filter(l => l.code === 2).length)
+
     return (
       <Card>
         <CardItem
@@ -24,12 +26,7 @@ export default class CycleCard extends Component {
               cycle.beer ?
                 <CText text={`${cycle.beer.name} (${cycle.beer.type_name})`} />
                 :
-                (
-                  cycle.end_time === null ?
-                    <CText text="Sem cerveja selecionada" style={{ color: grey }} />
-                    :
-                    null
-                )
+                <CText text="Sem cerveja selecionada" style={{ color: grey }} />
             }
           </Body>
           <Right>
@@ -46,7 +43,7 @@ export default class CycleCard extends Component {
         <CardItem
           style={{ paddingTop: 0 }}
           button
-          onPress={() => goTo(this.navigation, 'Cycle', { cycle })}
+          onPress={() => goTo(navigation, 'Cycle', { cycle })}
         >
           <Body>
             <CText
@@ -54,7 +51,7 @@ export default class CycleCard extends Component {
               text={`${getDuration(cycle)}${getDuration(cycle) ? ' de duração' : ''}`}
             />
             <CText
-              text={`${cycle.beer_count} garrafa${cycle.beer_count == 1 ? '' : 's'}`}
+              text={`${beerCount} garrafa${beerCount == 1 ? '' : 's'}`}
             />
           </Body>
           <Right>
