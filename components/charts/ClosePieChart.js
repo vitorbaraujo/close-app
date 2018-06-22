@@ -21,7 +21,7 @@ export default class ClosePieChart extends React.Component {
         {
           data.map((d, i) => {
             return (
-              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 100 }}>
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 74 }}>
                 <Badge style={{ height: 15, width: 15, backgroundColor: colors[i] }} />
                 <CText
                   subtitle

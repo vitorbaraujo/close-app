@@ -12,7 +12,7 @@ export default class CycleCard extends Component {
   render() {
     let { cycle, navigation } = this.props;
 
-    let beerCount = Math.max(cycle.beer_count, cycle.logs.filter(l => l.code === 2).length)
+    // let beerCount = Math.max(cycle.beer_count, cycle.logs.filter(l => l.code === 2).length)
 
     return (
       <Card>
@@ -51,7 +51,7 @@ export default class CycleCard extends Component {
               text={`${getDuration(cycle)}${getDuration(cycle) ? ' de duração' : ''}`}
             />
             <CText
-              text={`${beerCount} garrafa${beerCount == 1 ? '' : 's'}`}
+              text={`${cycle.beer_count} garrafa${cycle.beer_count == 1 ? '' : 's'}`}
             />
           </Body>
           <Right>
