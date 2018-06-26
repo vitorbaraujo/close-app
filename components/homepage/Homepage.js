@@ -75,7 +75,7 @@ export default class Homepage extends React.Component {
           this.setState({ lastCycle: last });
           clearInterval(intervalId);
         }
-      }, 3000)
+      }, 2000)
 
       this.setState({ loading: false })
     } catch(error) {

@@ -6,6 +6,7 @@ export function getLog(code) {
     case 3: return 'Sem cerveja no repositório';
     case 4: return 'Sem tampa na garrafa';
     case 5: return 'Botão de emergência acionado';
+    case 6: return 'Garrafa envasada';
     default: return 'Código inválido';
   }
 }
