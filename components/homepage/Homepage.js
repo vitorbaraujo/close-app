@@ -8,6 +8,7 @@ import { get } from '../../utils/Api';
 import { goTo } from '../../utils/NavigationUtils';
 import { dark, darker, light, white, green, lighter } from '../../utils/Colors';
 import CycleCard from './CycleCard';
+import InfoCard from '../commons/InfoCard';
 
 export default class Homepage extends React.Component {
   static navigationOptions = {
@@ -27,6 +28,8 @@ export default class Homepage extends React.Component {
       lastCycle: null,
       beers: [],
       loading: true,
+      beerAverage: 0,
+      revenueAverage: 0,
     }
 
     console.log('on constructor')
@@ -60,13 +63,26 @@ export default class Homepage extends React.Component {
 
       cycles = cycles.map(c => {
         return {
-        ...c,
-        beerId: c.beer,
-        beer: beers.find(b => b.id === c.beer)
-      }
+          ...c,
+          beerId: c.beer,
+          beer: beers.find(b => b.id === c.beer)
+        }
       })
 
-      this.setState({ beers, cycles, currentUser: user });
+      let beerAverage = cycles.reduce((a, b) => {
+        a += b.beer_count
+        return a
+      }, 0)
+
+      let revenueAverage = cycles.reduce((a, b) => {
+        a += b.beer_count * (b.beer && b.beer.price ? b.beer.price : 0)
+        return a
+      }, 0)
+
+      beerAverage = beerAverage / cycles.length;
+      revenueAverage = revenueAverage / cycles.length;
+
+      this.setState({ beers, cycles, currentUser: user, beerAverage, revenueAverage });
 
       let intervalId = setInterval(async () => {
         let last = await get('users/me/last_cycle/');
@@ -87,11 +103,11 @@ export default class Homepage extends React.Component {
 
   _renderItem = ({ item }) => {
     let cycle = item || {};
-    return <CycleCard cycle={cycle} navigation={this.navigation} />
+    return <CycleCard cycle={cycle} navigation={this.navigation} average={this.state.revenueAverage} />
   }
 
   render() {
-    let { currentUser, cycles, lastCycle, loading } = this.state;
+    let { currentUser, cycles, lastCycle, loading, beerAverage, revenueAverage } = this.state;
 
     if (loading) {
       return (
@@ -148,7 +164,25 @@ export default class Homepage extends React.Component {
                 <Content padder contentContainerStyle={styles.content}>
                   <CText text="Garrafas fechadas por ciclo" style={{ color: 'white' }} />
                   <CycleChart data={[...cycles]} />
-                  <CText text="Últimos ciclos" style={{ color: 'white', marginBottom: 20 }} />
+
+                  <View style={{ flexDirection: 'row' }}>
+                    <InfoCard
+                      icon="md-beer"
+                      type="Ionicons"
+                      text={Math.floor(beerAverage)}
+                      iconColor={lighter}
+                      subtitle="média de garrafas fechadas"
+                    />
+                    <InfoCard
+                      icon="attach-money"
+                      type="MaterialIcons"
+                      text={`R$ ${revenueAverage.toFixed(2)}`}
+                      iconColor={green}
+                      subtitle="renda média"
+                    />
+                  </View>
+
+                  <CText text="Últimos ciclos" style={{ color: 'white', marginTop: 20, marginBottom: 20 }} />
                   <View style={{ flex: 1 }}>
                     <FlatList
                       data={cycles}

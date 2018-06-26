@@ -105,6 +105,7 @@ export default class Cycle extends React.Component {
 
   render() {
     let { cycle } = this.state;
+    let { average } = this.props;
 
     // let beerCount = Math.max(cycle.beer_count, cycle.logs.filter(l => l.code === 2).length)
 
@@ -208,7 +209,7 @@ export default class Cycle extends React.Component {
                 textStyle={styles.tabText}
                 activeTextStyle={styles.tabActiveText}
               >
-                <CycleStats cycle={cycle} />
+                <CycleStats cycle={cycle} average={average} />
               </Tab>
             </Tabs>
           </View>
