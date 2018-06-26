@@ -14,8 +14,9 @@ export default class CycleHistory extends React.Component {
   _renderItem = (obj) => {
     let { item, index } = obj;
     let isLast = index === this.props.logs.length - 1;
+    let isDanger = [3, 4, 5].includes(item.code);
 
-    return <Log log={item} last={isLast} />
+    return <Log log={item} last={isLast} danger={isDanger}/>
   }
 
   render() {

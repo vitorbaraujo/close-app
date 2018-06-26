@@ -25,7 +25,7 @@ export default class CycleStats extends React.Component {
                 type="MaterialIcons"
                 text={`R$ ${revenue.toFixed(2)}`}
                 iconColor={green}
-                subtitle="renda média"
+                subtitle="retorno esperado"
               />
               <InfoCard
                 icon={revenue > average ? 'md-arrow-up' : 'md-arrow-down'}

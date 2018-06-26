@@ -5,18 +5,18 @@ import { Icon } from 'native-base';
 import { getLog } from '../../utils/Logs';
 import { formattedHour } from '../../utils/DateUtils';
 import { View } from 'react-native';
-import { grey, green, almostWhite } from '../../utils/Colors';
+import { grey, green, almostWhite, red } from '../../utils/Colors';
 
 export default class Log extends Component {
   render() {
-    let { log, last } = this.props;
+    let { log, last, danger } = this.props;
     let msg = getLog(log.code);
     let hour = formattedHour(moment(log.ocurred_at));
 
     return (
       <View style={{ flexDirection: 'row', height: 50 }}>
         <View style={{ flex: 2, marginTop: 5 }} >
-          <Icon type="FontAwesome" name="circle" style={{ color: grey, fontSize: 14, alignSelf: 'center' }} />
+          <Icon type="FontAwesome" name="circle" style={{ color: danger ? red : green, fontSize: 14, alignSelf: 'center' }} />
           { !last &&
             <View style={{ flex: 1, backgroundColor: almostWhite, width: 2, alignSelf: 'center' }}/>
           }
