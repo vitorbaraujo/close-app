@@ -10,7 +10,7 @@ import moment from 'moment';
 
 export default class CycleCard extends Component {
   render() {
-    let { cycle, navigation } = this.props;
+    let { cycle, navigation, average } = this.props;
 
     // let beerCount = Math.max(cycle.beer_count, cycle.logs.filter(l => l.code === 2).length)
 
@@ -19,7 +19,7 @@ export default class CycleCard extends Component {
         <CardItem
           header
           button
-          onPress={() => goTo(navigation, 'Cycle', { cycle, beer: cycle.beer })}
+          onPress={() => goTo(navigation, 'Cycle', { cycle, beer: cycle.beer, average })}
         >
           <Body>
             {
